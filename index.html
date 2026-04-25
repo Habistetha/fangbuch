@@ -476,6 +476,120 @@
       }
     }
 
+  
+    /* Handy Querformat und Touch Geräte v1.2 */
+    @media (pointer: coarse) and (max-height: 560px), (max-width: 900px) and (orientation: landscape){
+      body{
+        overflow-x:hidden;
+      }
+      .app{
+        width:100%;
+        padding:12px 14px 20px;
+      }
+      .page-title{
+        font-size:30px;
+        margin:8px 0 8px;
+      }
+      .login-brand{
+        margin-bottom:10px;
+      }
+      .login-brand.logo-only img{
+        width:96px;
+        height:96px;
+        border-radius:22px;
+        padding:7px;
+      }
+      .topbar{
+        width:100%;
+        margin:0 auto 10px;
+      }
+      #loginCard{
+        width:min(94vw, 520px);
+        max-width:520px;
+        margin:0 auto;
+        display:grid;
+        grid-template-columns:1fr;
+        gap:10px;
+        padding:14px;
+        border-radius:22px;
+        background:rgba(255,255,255,.94);
+        box-shadow:0 16px 34px rgba(9,44,36,.18);
+      }
+      #loginCard strong{
+        text-align:center;
+        font-size:17px;
+        margin:0;
+      }
+      #loginEmail,
+      #loginPassword{
+        width:100%;
+        min-width:0 !important;
+        max-width:100%;
+        height:50px;
+        min-height:50px;
+        font-size:16px;
+        border-radius:15px;
+        padding:12px 14px;
+        flex:none !important;
+      }
+      #loginCard button{
+        width:100%;
+        min-height:48px;
+        border-radius:15px;
+        font-size:14px;
+        padding:11px 14px;
+        flex:none !important;
+      }
+      .footer{
+        margin-top:12px;
+        font-size:11px;
+      }
+    }
+
+  
+    @media (pointer: coarse){
+      #loginEmail,
+      #loginPassword{
+        min-width:0 !important;
+      }
+    }
+
+  
+    .account-tools{
+      width:min(430px, calc(100vw - 28px));
+      margin:0 auto 14px;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .account-toggle{
+      background:rgba(255,255,255,.94);
+      color:var(--green-dark);
+      border:1px solid var(--line);
+      box-shadow:0 10px 22px rgba(9,44,36,.08);
+      min-height:46px;
+    }
+    #passwordChangeCard.collapsed{
+      display:none !important;
+    }
+    #passwordChangeCard.expanded{
+      display:grid !important;
+    }
+    @media (min-width: 721px){
+      .account-tools{
+        width:min(900px, calc(100vw - 40px));
+      }
+      #passwordChangeCard.expanded{
+        width:min(900px, calc(100vw - 40px));
+        margin:0 auto 16px;
+        display:grid !important;
+        grid-template-columns:1fr 1fr 1fr auto auto;
+        align-items:center;
+        gap:10px;
+      }
+    }
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -517,6 +631,10 @@
         <input id="newPasswordConfirm" type="password" placeholder="Neues Passwort wiederholen">
         <button class="btn-main btn-small" onclick="changeOwnPassword()">Ändern</button>
       </div>
+    </div>
+
+    <div class="account-tools" id="accountTools" style="display:none">
+      <button class="account-toggle btn-small" type="button" onclick="togglePasswordChange()">Passwort ändern</button>
     </div>
 
     <nav class="tabs" id="mainTabs">
@@ -782,7 +900,7 @@
         </article>
       </section>
     </main>
-    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.1</div>
+    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.3</div>
   </div>
 
 <script>
@@ -1927,6 +2045,15 @@ async function logoutMember(){
   applySessionView();
   showSection("start");
 }
+
+function togglePasswordChange(force){
+  const card = document.getElementById("passwordChangeCard");
+  if(!card) return;
+  const open = typeof force === "boolean" ? force : !card.classList.contains("expanded");
+  card.classList.toggle("expanded", open);
+  card.classList.toggle("collapsed", !open);
+}
+
 function applySessionView(){
   const member = loggedInMember();
   const loginState = document.getElementById("loginState");
@@ -1934,25 +2061,32 @@ function applySessionView(){
   const logoutButton = document.getElementById("logoutButton");
   const loginCard = document.getElementById("loginCard");
   const topbar = document.getElementById("topbar");
+  const accountTools = document.getElementById("accountTools");
   document.body.classList.toggle("app-mode", Boolean(member));
   if(member){
     document.getElementById("memberSelect").value = member.id;
     if(document.getElementById("loginEmail") && currentAuthUser?.email) document.getElementById("loginEmail").value = currentAuthUser.email;
     document.getElementById("roleSelect").value = member.role || "mitglied";
     loginState.textContent = `${member.nr} · ${member.name} · ${roleLabel(member.role)}`;
-    passwordCard.style.display = "flex";
+    passwordCard.style.display = "";
+    passwordCard.classList.add("collapsed");
+    passwordCard.classList.remove("expanded");
     logoutButton.style.display = "inline-flex";
     loginCard.style.display = "none";
     topbar.style.display = "flex";
+    if(accountTools) accountTools.style.display = "flex";
     passwordCard.appendChild(logoutButton);
   } else {
     document.body.classList.remove("app-mode");
     document.getElementById("roleSelect").value = "mitglied";
     loginState.textContent = "Niemand";
     passwordCard.style.display = "none";
+    passwordCard.classList.add("collapsed");
+    passwordCard.classList.remove("expanded");
     logoutButton.style.display = "none";
     loginCard.style.display = "flex";
     topbar.style.display = "flex";
+    if(accountTools) accountTools.style.display = "none";
   }
   updateRoleView();
 }
