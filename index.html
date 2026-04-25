@@ -983,14 +983,18 @@
             <div id="adminPanelStock" class="admin-panel" style="display:none">
               <div class="admin-grid">
                 <div class="panel">
-                  <h3>Besatz eintragen</h3>
+                  <h3 id="stockFormTitle">Besatz eintragen</h3>
+                  <input type="hidden" id="stockEditId">
                   <div class="field"><label>Datum</label><input id="stockDate" type="date"></div><br>
                   <div class="field"><label>Gewässer</label><select id="stockWater"></select></div><br>
                   <div class="field"><label>Fischart</label><select id="stockFish"></select></div><br>
                   <div class="field"><label>Anzahl</label><input id="stockCount" type="number" min="1" step="1" value="1"></div><br>
                   <div class="field"><label>Art</label><select id="stockType"><option value="besatz">Besatz / Zukauf</option><option value="korrektur_plus">Korrektur plus</option><option value="korrektur_minus">Korrektur minus</option></select></div><br>
                   <div class="field"><label>Bemerkung</label><textarea id="stockNote" placeholder="z. B. Besatz Frühjahr 2026"></textarea></div>
-                  <div class="actions" style="margin-top:12px"><button class="btn-main" onclick="saveStockMovement()">Bestand buchen</button></div>
+                  <div class="actions" style="margin-top:12px">
+                    <button class="btn-main" id="stockSubmitButton" onclick="saveStockMovement()">Bestand buchen</button>
+                    <button class="btn-light" type="button" onclick="cancelStockEdit()">Abbrechen</button>
+                  </div>
                 </div>
                 <div class="panel">
                   <h3>Bestand je Gewässer</h3>
@@ -1983,16 +1987,20 @@ function renderStockTotals(id, rows){
   if(!totals.length){ el.innerHTML = `<div class="empty">Noch keine Bestandsdaten vorhanden.</div>`; return; }
   el.innerHTML = `<div class="table-wrap stock-table"><table><thead><tr><th>Fischart</th><th>Gesamt</th><th>Verteilung</th></tr></thead><tbody>${totals.map(t => { const parts = rows.filter(r => sameId(r.fishId, t.fishId) && Number(r.count) !== 0).map(r => `${byId(waters(), r.waterId)?.name || "?"}: ${r.count}`).join(" / "); return `<tr class="tinted-row" style="--row-color:${fishColor(t.fishId)}"><td>${byId(fishTypes(), t.fishId)?.name || ""}</td><td>${t.count}</td><td>${parts}</td></tr>`; }).join("")}</tbody></table></div>`;
 }
+function stockTypeLabel(type){
+  return type === "korrektur_minus" ? "Korrektur minus" : (type === "korrektur_plus" ? "Korrektur plus" : "Besatz");
+}
 function renderStockMovements(){
   renderStockByWater("currentStockTable", stockBalanceRows());
   const rows = stockMovements().sort((a,b)=>new Date(b.date)-new Date(a.date));
   const el = document.getElementById("stockTable");
   if(!el) return;
   if(!rows.length){ el.innerHTML = `<div class="empty">Noch kein Besatz eingetragen.</div>`; return; }
-  el.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Datum</th><th>Art</th><th>Gewässer</th><th>Fischart</th><th>Anzahl</th><th>Bemerkung</th></tr></thead><tbody>${rows.map(m => `<tr><td>${formatDate(m.date)}</td><td>${m.type === "korrektur_minus" ? "Korrektur minus" : (m.type === "korrektur_plus" ? "Korrektur plus" : "Besatz")}</td><td>${byId(waters(), m.waterId)?.name || ""}</td><td>${byId(fishTypes(), m.fishId)?.name || ""}</td><td>${m.count}</td><td>${m.note || "–"}</td></tr>`).join("")}</tbody></table></div>`;
+  el.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Datum</th><th>Art</th><th>Gewässer</th><th>Fischart</th><th>Anzahl</th><th>Bemerkung</th><th>Aktion</th></tr></thead><tbody>${rows.map(m => `<tr><td>${formatDate(m.date)}</td><td>${stockTypeLabel(m.type)}</td><td>${byId(waters(), m.waterId)?.name || ""}</td><td>${byId(fishTypes(), m.fishId)?.name || ""}</td><td>${m.count}</td><td>${m.note || "–"}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editStockMovement(${jsId(m.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteStockMovement(${jsId(m.id)})">Löschen</button></div></td></tr>`).join("")}</tbody></table></div>`;
 }
 async function saveStockMovement(){
   if(role() === "mitglied"){ alert("Bestände dürfen nur Vorstand, Gewässerwart oder Administrator pflegen."); return; }
+  const editId = document.getElementById("stockEditId")?.value || "";
   const date = document.getElementById("stockDate").value;
   const count = Number(document.getElementById("stockCount").value);
   if(!date || !count || count < 1){ notice("adminNotice","error","Bitte Datum und Anzahl eintragen."); return; }
@@ -2005,15 +2013,61 @@ async function saveStockMovement(){
     note:document.getElementById("stockNote").value.trim() || null
   };
   try{
-    const row = await saveSimpleRow("stock_movements", payload);
+    const row = await saveSimpleRow("stock_movements", payload, editId);
     const item = normalizeStock(row);
-    saveStockMovements([item, ...stockMovements()]);
-    document.getElementById("stockCount").value = 1;
-    document.getElementById("stockNote").value = "";
+    let list = stockMovements();
+    if(editId){
+      list = list.map(m => sameId(m.id, editId) ? item : m);
+      notice("adminNotice","ok","Bestandsbewegung wurde bearbeitet.");
+    } else {
+      list = [item, ...list];
+      notice("adminNotice","ok","Bestandsbewegung wurde gespeichert.");
+    }
+    saveStockMovements(list);
+    cancelStockEdit(false);
     renderAll();
-    notice("adminNotice","ok","Bestandsbewegung wurde gespeichert.");
   }catch(err){
     notice("adminNotice","error","Bestandsbewegung konnte nicht gespeichert werden: " + err.message);
+  }
+}
+function editStockMovement(id){
+  if(role() === "mitglied"){ alert("Bestände dürfen nur Vorstand, Gewässerwart oder Administrator pflegen."); return; }
+  const m = byId(stockMovements(), id);
+  if(!m) return;
+  document.getElementById("stockEditId").value = m.id;
+  document.getElementById("stockDate").value = m.date || "";
+  document.getElementById("stockWater").value = m.waterId;
+  document.getElementById("stockFish").value = m.fishId;
+  document.getElementById("stockCount").value = m.count || 1;
+  document.getElementById("stockType").value = m.type || "besatz";
+  document.getElementById("stockNote").value = m.note || "";
+  document.getElementById("stockFormTitle").textContent = "Besatz bearbeiten";
+  document.getElementById("stockSubmitButton").textContent = "Bestand aktualisieren";
+  clearNotice("adminNotice");
+  document.getElementById("adminPanelStock").scrollIntoView({behavior:"smooth", block:"start"});
+}
+function cancelStockEdit(clear=true){
+  const editId = document.getElementById("stockEditId");
+  if(editId) editId.value = "";
+  if(document.getElementById("stockDate")) document.getElementById("stockDate").valueAsDate = new Date();
+  if(document.getElementById("stockCount")) document.getElementById("stockCount").value = 1;
+  if(document.getElementById("stockType")) document.getElementById("stockType").value = "besatz";
+  if(document.getElementById("stockNote")) document.getElementById("stockNote").value = "";
+  if(document.getElementById("stockFormTitle")) document.getElementById("stockFormTitle").textContent = "Besatz eintragen";
+  if(document.getElementById("stockSubmitButton")) document.getElementById("stockSubmitButton").textContent = "Bestand buchen";
+  if(clear) clearNotice("adminNotice");
+}
+async function deleteStockMovement(id){
+  if(role() === "mitglied"){ alert("Bestände dürfen nur Vorstand, Gewässerwart oder Administrator pflegen."); return; }
+  if(!confirm("Bestandsbewegung wirklich löschen?")) return;
+  try{
+    await deleteSimpleRow("stock_movements", id);
+    saveStockMovements(stockMovements().filter(m => !sameId(m.id, id)));
+    if(sameId(document.getElementById("stockEditId")?.value, id)) cancelStockEdit(false);
+    renderAll();
+    notice("adminNotice","ok","Bestandsbewegung wurde gelöscht.");
+  }catch(err){
+    notice("adminNotice","error","Bestandsbewegung konnte nicht gelöscht werden: " + err.message);
   }
 }
 
@@ -2226,19 +2280,6 @@ async function changeOwnPassword(){
     alert("Passwortänderung fehlgeschlagen: " + err.message);
   }
 }
-function resetMemberPassword(id){
-  alert("Passwort Zurücksetzen läuft ab jetzt über Supabase Auth. Im Browser darf der öffentliche Anon Key keine fremden Benutzerpasswörter ändern. Neues Passwort daher in Supabase unter Authentication > Users setzen oder später per Edge Function absichern.");
-}
-async function saveMemberPasswordReset(){
-  alert("Passwort Zurücksetzen läuft ab jetzt über Supabase Auth und nicht mehr über die lokale Testlogik.");
-}
-function cancelPasswordReset(){
-  document.getElementById("passwordResetPanel").style.display = "none";
-  document.getElementById("passwordResetMemberId").value = "";
-  document.getElementById("passwordResetMember").textContent = "Kein Mitglied ausgewählt.";
-  document.getElementById("adminNewPassword").value = "";
-  document.getElementById("adminNewPasswordConfirm").value = "";
-}
 function renderMemberFilterOptions(){
   const statusSelect = document.getElementById("memberStatusFilter");
   const roleSelectFilter = document.getElementById("memberRoleFilter");
@@ -2278,8 +2319,7 @@ function renderCustomRoles(){
 function renderAdmin(){
   renderMemberFilterOptions();
   renderCustomRoles();
-  const canResetPassword = role() === "admin";
-  const memRows = filteredMembersForAdmin().map(m => `<tr><td>${m.nr}</td><td>${m.name}</td><td>${memberStatusLabel(m.status)}</td><td>${roleLabel(m.role)}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editMember(${jsId(m.id)})">Bearbeiten</button>${canResetPassword ? `<button class="btn-light btn-small" onclick="resetMemberPassword(${jsId(m.id)})">Passwort neu</button>` : ""}<button class="btn-danger btn-small" onclick="deleteMember(${jsId(m.id)})">Löschen</button></div></td></tr>`);
+  const memRows = filteredMembersForAdmin().map(m => `<tr><td>${m.nr}</td><td>${m.name}</td><td>${memberStatusLabel(m.status)}</td><td>${roleLabel(m.role)}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editMember(${jsId(m.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteMember(${jsId(m.id)})">Löschen</button></div></td></tr>`);
   document.getElementById("membersTable").innerHTML = memRows.length ? adminTable(["Nr.","Name","Status","Rolle","Aktion"], memRows) : `<div class="empty">Keine Mitglieder passend zum Filter.</div>`;
   const watRows = waters().map(w => `<tr><td><span class="color-swatch" style="background:${waterColor(w.id)}"></span></td><td>${w.name}</td><td>${w.type}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editWater(${jsId(w.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteWater(${jsId(w.id)})">Löschen</button></div></td></tr>`);
   document.getElementById("watersTable").innerHTML = adminTable(["Farbe","Name","Typ","Aktion"], watRows);
@@ -2467,6 +2507,3 @@ init();
 </script>
 </body>
 </html>
-
-
-
