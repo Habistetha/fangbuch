@@ -1,0 +1,25 @@
+{
+  "name": "ASV Mellrichstadt Fangbuch",
+  "short_name": "Fangbuch",
+  "description": "Digitales Fangbuch des ASV Mellrichstadt e.V.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#edf7f2",
+  "theme_color": "#16765b",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
