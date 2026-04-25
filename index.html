@@ -590,6 +590,29 @@
       }
     }
 
+  
+    #logoutButton{
+      display:none !important;
+    }
+    #logoutButtonMobile{
+      background:rgba(255,255,255,.94);
+    }
+    @media (max-width:720px){
+      .account-tools{
+        width:min(430px, calc(100vw - 28px));
+        display:grid !important;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+      }
+      .account-tools[style*="display:none"],
+      .account-tools[style*="display: none"]{
+        display:none !important;
+      }
+      .account-tools button{
+        width:100%;
+      }
+    }
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -635,6 +658,7 @@
 
     <div class="account-tools" id="accountTools" style="display:none">
       <button class="account-toggle btn-small" type="button" onclick="togglePasswordChange()">Passwort ändern</button>
+      <button id="logoutButtonMobile" class="account-toggle btn-small" type="button" onclick="logoutMember()">Abmelden</button>
     </div>
 
     <nav class="tabs" id="mainTabs">
@@ -900,7 +924,7 @@
         </article>
       </section>
     </main>
-    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.3</div>
+    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.4</div>
   </div>
 
 <script>
@@ -2071,11 +2095,10 @@ function applySessionView(){
     passwordCard.style.display = "";
     passwordCard.classList.add("collapsed");
     passwordCard.classList.remove("expanded");
-    logoutButton.style.display = "inline-flex";
+    logoutButton.style.display = "none";
     loginCard.style.display = "none";
     topbar.style.display = "flex";
     if(accountTools) accountTools.style.display = "flex";
-    passwordCard.appendChild(logoutButton);
   } else {
     document.body.classList.remove("app-mode");
     document.getElementById("roleSelect").value = "mitglied";
