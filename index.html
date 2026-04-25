@@ -308,13 +308,6 @@
       }
     }
 
-
-    .report-actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 16px}
-    .rule-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-    .rule-list{display:grid;gap:10px;margin-top:12px}
-    .rule-item{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;background:white;border:1px solid var(--line);border-radius:14px;padding:12px}
-    .rule-item strong{color:var(--green-dark)}
-    @media(max-width:850px){.rule-grid{grid-template-columns:1fr}.rule-item{flex-direction:column}}
     .footer{text-align:center;color:var(--muted);font-size:13px;margin-top:24px}
     .empty{text-align:center;color:var(--muted);padding:24px}
     @media(max-width:850px){
@@ -706,10 +699,6 @@
     }
 
   </style>
-
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <meta name="theme-color" content="#0f5132">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -735,7 +724,6 @@
         <button class="btn-main btn-small" onclick="loginMember()">Anmelden</button>
         <button class="forgot-link btn-small" type="button" onclick="forgotPassword()">Passwort vergessen</button>
         <button class="btn-light btn-small" onclick="registerMember()">Erstzugang erstellen</button>
-        <button id="logoutButton" class="btn-light btn-small" onclick="logoutMember()" style="display:none">Abmelden</button>
       </div>
       <span id="loginState" class="sr-only">Niemand</span>
       <select id="roleSelect" onchange="updateRoleView()" style="display:none">
@@ -869,24 +857,6 @@
             <h2>Auswertung</h2>
 </div>
           <div class="card-body">
-            <div class="panel full" style="margin-bottom:16px">
-              <h3>Jahresbericht exportieren</h3>
-              <div class="rule-grid">
-                <div class="field">
-                  <label for="reportYear">Jahr</label>
-                  <select id="reportYear"></select>
-                </div>
-                <div class="field">
-                  <label for="reportWater">Gewässer</label>
-                  <select id="reportWater"></select>
-                </div>
-              </div>
-              <div class="report-actions">
-                <button class="btn-main" type="button" onclick="exportYearCsv()">CSV Export</button>
-                <button class="btn-light" type="button" onclick="exportYearPdf()">PDF Export / Drucken</button>
-              </div>
-              <div id="reportSummary" class="hint"></div>
-            </div>
             <div class="admin-grid" style="margin-top:16px">
               <div class="panel full">
                 <h3>Gesamtbestand je Fischart</h3>
@@ -916,7 +886,6 @@
               <button class="admin-tab" data-admin="waters" onclick="showAdminPanel('waters')">Gewässer verwalten</button>
               <button class="admin-tab" data-admin="fish" onclick="showAdminPanel('fish')">Fischarten verwalten</button>
               <button class="admin-tab" data-admin="stock" onclick="showAdminPanel('stock')">Besatz & Bestand</button>
-              <button class="admin-tab" data-admin="rules" onclick="showAdminPanel('rules')">Regeln</button>
             </div>
 
             <div id="adminPanelMembers" class="admin-panel">
@@ -939,7 +908,6 @@
                       <option value="neu">Neues Mitglied</option>
                       <option value="ehrenmitglied">Ehrenmitglied</option>
                       <option value="pausierend">Pausierend</option>
-                      <option value="archiviert">Archiviert</option>
                     </select>
                   </div><br>
                   <div class="actions">
@@ -1015,18 +983,14 @@
             <div id="adminPanelStock" class="admin-panel" style="display:none">
               <div class="admin-grid">
                 <div class="panel">
-                  <h3 id="stockFormTitle">Besatz eintragen</h3>
-                  <input type="hidden" id="stockEditId">
+                  <h3>Besatz eintragen</h3>
                   <div class="field"><label>Datum</label><input id="stockDate" type="date"></div><br>
                   <div class="field"><label>Gewässer</label><select id="stockWater"></select></div><br>
                   <div class="field"><label>Fischart</label><select id="stockFish"></select></div><br>
                   <div class="field"><label>Anzahl</label><input id="stockCount" type="number" min="1" step="1" value="1"></div><br>
                   <div class="field"><label>Art</label><select id="stockType"><option value="besatz">Besatz / Zukauf</option><option value="korrektur_plus">Korrektur plus</option><option value="korrektur_minus">Korrektur minus</option></select></div><br>
                   <div class="field"><label>Bemerkung</label><textarea id="stockNote" placeholder="z. B. Besatz Frühjahr 2026"></textarea></div>
-                  <div class="actions" style="margin-top:12px">
-                    <button class="btn-main" id="stockSubmitButton" onclick="saveStockMovement()">Bestand buchen</button>
-                    <button class="btn-light" type="button" onclick="cancelStockEdit()">Abbrechen</button>
-                  </div>
+                  <div class="actions" style="margin-top:12px"><button class="btn-main" onclick="saveStockMovement()">Bestand buchen</button></div>
                 </div>
                 <div class="panel">
                   <h3>Bestand je Gewässer</h3>
@@ -1039,34 +1003,12 @@
               </div>
             </div>
 
-
-            <div id="adminPanelRules" class="admin-panel" style="display:none">
-              <div class="admin-grid">
-                <div class="panel">
-                  <h3>Allgemeine Plausibilitätsregeln</h3>
-                  <div class="field"><label>Maximal entnommene maßige Fische je Mitglied und Tag</label><input id="ruleMaxProtectedTake" type="number" min="1" step="1" value="3"></div><br>
-                  <div class="field"><label>Maximale Anzahl je einzelner Fangmeldung</label><input id="ruleMaxSingleCatch" type="number" min="1" step="1" value="50"></div><br>
-                  <div class="actions"><button class="btn-main" type="button" onclick="savePlausibilitySettings()">Regeln speichern</button></div>
-                </div>
-                <div class="panel">
-                  <h3>Besondere Gewässerregel hinzufügen</h3>
-                  <div class="field"><label>Gewässer</label><select id="waterRuleWater"></select></div><br>
-                  <div class="field"><label>Regeltext</label><textarea id="waterRuleText" placeholder="z. B. Am Vereinsgewässer nur Kunstköder erlaubt."></textarea></div>
-                  <div class="actions" style="margin-top:12px"><button class="btn-main" type="button" onclick="saveWaterRule()">Gewässerregel speichern</button></div>
-                </div>
-                <div class="panel full">
-                  <h3>Aktive Gewässerregeln</h3>
-                  <div id="waterRulesTable"></div>
-                </div>
-              </div>
-            </div>
-
             <div id="adminNotice" class="notice"></div>
           </div>
         </article>
       </section>
     </main>
-    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v2.1</div>
+    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v2.2</div>
   </div>
 
 <script>
@@ -1077,7 +1019,7 @@
 // logo-asv.png
 // hintergrund-fangbuch.jpg
 const ASV_ASSETS = {
-  logoUrl: "./logo-asv.png",
+  logoUrl: "https://oapiahtownftseovczvn.supabase.co/storage/v1/object/public/asv-assets/logo-asv.png",
   backgroundUrl: "https://oapiahtownftseovczvn.supabase.co/storage/v1/object/public/asv-assets/hintergrund-fangbuch.jpg"
 };
 
@@ -1093,8 +1035,7 @@ const keys = {
   fish:"asv_v03_fish",
   catches:"asv_v03_catches",
   stock:"asv_v01_stock_movements",
-  roles:"asv_v01_roles",
-  rules:"asv_v01_rules"
+  roles:"asv_v01_roles"
 };
 
 const defaults = {
@@ -1354,8 +1295,7 @@ const defaults = {
     {id:"mitglied", label:"Mitglied", system:true},
     {id:"vorstand", label:"Vorstand / Gewässerwart", system:true},
     {id:"admin", label:"Administrator", system:true}
-  ],
-  rules:{maxProtectedTakePerDay:3,maxSingleCatchCount:50,waterRules:[]}
+  ]
 };
 
 function clone(v){ return JSON.parse(JSON.stringify(v)); }
@@ -1373,8 +1313,7 @@ function ensureState(){
       fish:localLoad(keys.fish, defaults.fish),
       catches:localLoad(keys.catches, defaults.catches),
       stock:localLoad(keys.stock, defaults.stock),
-      roles:localLoad(keys.roles, defaults.roles),
-      rules:localLoad(keys.rules, defaults.rules)
+      roles:localLoad(keys.roles, defaults.roles)
     };
   }
   return appState;
@@ -1386,8 +1325,6 @@ function fishTypes(){ return sortByName(ensureState().fish); }
 function catches(){ return ensureState().catches; }
 function stockMovements(){ return ensureState().stock; }
 function roles(){ return ensureState().roles; }
-function rules(){ return ensureState().rules || defaults.rules; }
-function saveRules(v){ setStatePart("rules", v); localSave(keys.rules, v); }
 function setStatePart(name, value){ ensureState()[name] = value; }
 function saveMembers(v){ setStatePart("members", v); localSave(keys.members, v); }
 function saveWaters(v){ setStatePart("waters", v); localSave(keys.waters, v); }
@@ -1447,22 +1384,6 @@ function normalizeStock(row){
     createdAt:row.created_at
   };
 }
-function normalizePlausibilitySettings(row){
-  return {
-    id: row?.id || 1,
-    maxProtectedTakePerDay: Number(row?.max_protected_take_per_day ?? row?.maxProtectedTakePerDay ?? 3),
-    maxSingleCatchCount: Number(row?.max_single_catch_count ?? row?.maxSingleCatchCount ?? 50)
-  };
-}
-function normalizeWaterRule(row){
-  return {
-    id: row.id,
-    waterId: String(row.water_id ?? row.waterId ?? ""),
-    text: row.rule_text ?? row.text ?? "",
-    active: row.active !== false,
-    createdAt: row.created_at
-  };
-}
 function catchPayload(data){
   return {
     catch_date:data.date,
@@ -1483,29 +1404,21 @@ async function loadCloudData(){
     ensureState();
     return;
   }
-  const [m,w,f,c,st,ps,wr] = await Promise.all([
+  const [m,w,f,c,st] = await Promise.all([
     supabaseClient.from("members").select("id,member_no,name,role,status,auth_user_id,must_change_password,email").order("name", {ascending:true}),
     supabaseClient.from("waters").select("id,name,type,color").order("name", {ascending:true}),
     supabaseClient.from("fish_types").select("id,name,min_size_cm,color").order("name", {ascending:true}),
     supabaseClient.from("catches").select("id,catch_date,member_id,water_id,fish_type_id,length_cm,weight_g,count,status,target_water_id,note,created_at").order("catch_date", {ascending:false}),
-    supabaseClient.from("stock_movements").select("id,movement_date,water_id,fish_type_id,count,type,note,created_at").order("movement_date", {ascending:false}),
-    supabaseClient.from("plausibility_settings").select("id,max_protected_take_per_day,max_single_catch_count").limit(1).maybeSingle(),
-    supabaseClient.from("water_rules").select("id,water_id,rule_text,active,created_at").eq("active", true).order("created_at", {ascending:false})
+    supabaseClient.from("stock_movements").select("id,movement_date,water_id,fish_type_id,count,type,note,created_at").order("movement_date", {ascending:false})
   ]);
   [m,w,f,c,st].forEach(res => dbError(res.error));
-  if(ps.error) console.warn("Plausibilitätsregeln konnten nicht geladen werden:", ps.error.message);
-  if(wr.error) console.warn("Gewässerregeln konnten nicht geladen werden:", wr.error.message);
   appState = {
     members:m.data?.length ? m.data.map(normalizeMember) : clone(defaults.members),
     waters:w.data?.length ? w.data : clone(defaults.waters),
     fish:f.data?.length ? f.data.map(normalizeFish) : clone(defaults.fish),
     catches:(c.data || []).map(normalizeCatch),
     stock:(st.data || []).map(normalizeStock),
-    roles:clone(defaults.roles),
-    rules:{
-      ...normalizePlausibilitySettings(ps.data || defaults.rules),
-      waterRules: wr.error ? (rules().waterRules || []) : (wr.data || []).map(normalizeWaterRule)
-    }
+    roles:clone(defaults.roles)
   };
 }
 async function saveCatchCloud(data, editId=""){
@@ -1773,11 +1686,7 @@ document.getElementById("catchForm").addEventListener("submit", async e => {
   if(d > today) warnings.push("Das Fangdatum liegt in der Zukunft.");
   const f = byId(fishTypes(), data.fishId);
   if(f?.min && data.length && Number(data.length) < f.min) warnings.push(`Die Länge liegt unter dem Mindestmaß von ${f.min} cm.`);
-  const currentRules = rules();
-  if(Number(data.count || 0) > Number(currentRules.maxSingleCatchCount || 50)) warnings.push(`Diese Fangmeldung überschreitet die hinterlegte Maximalanzahl von ${currentRules.maxSingleCatchCount || 50}.`);
-  if(data.status === "entnommen" && f?.min && dailyProtectedTake(data.memberId, data.date) + Number(data.count || 1) > Number(currentRules.maxProtectedTakePerDay || 3)) warnings.push(`Die Fangbegrenzung von ${currentRules.maxProtectedTakePerDay || 3} entnommenen maßigen Fischen je Tag wird überschritten.`);
-  const waterWarnings = (currentRules.waterRules || []).filter(r => sameId(r.waterId, data.waterId) && r.active !== false).map(r => r.text).filter(Boolean);
-  if(waterWarnings.length) warnings.push("Besondere Gewässerregel: " + waterWarnings.join(" / "));
+  if(data.status === "entnommen" && f?.min && Number(data.count || 1) > 3) warnings.push("Die Fangbegrenzung von 3 entnommenen Fischen mit Mindestmaß wird überschritten.");
   if(errors.length){ notice("formNotice","error",errors.join(" ")); return; }
   try{
     const saved = await saveCatchCloud(data, editId);
@@ -1805,11 +1714,7 @@ function catchRuleIssues(c){
   const issues = [];
   const f = byId(fishTypes(), c.fishId);
   if(c.status === "entnommen" && f?.min && c.length && Number(c.length) < Number(f.min)) issues.push(`Unter Mindestmaß (${f.min} cm)`);
-  const currentRules = rules();
-  if(Number(c.count || 0) > Number(currentRules.maxSingleCatchCount || 50)) issues.push(`Maximalanzahl je Fangmeldung überschritten (${currentRules.maxSingleCatchCount || 50})`);
-  if(c.status === "entnommen" && f?.min && dailyProtectedTake(c.memberId, c.date) > Number(currentRules.maxProtectedTakePerDay || 3)) issues.push(`Fangbegrenzung überschritten (max. ${currentRules.maxProtectedTakePerDay || 3} maßige Fische pro Tag)`);
-  const waterWarnings = (currentRules.waterRules || []).filter(r => sameId(r.waterId, c.waterId) && r.active !== false).map(r => r.text).filter(Boolean);
-  waterWarnings.forEach(t => issues.push("Gewässerregel: " + t));
+  if(c.status === "entnommen" && f?.min && dailyProtectedTake(c.memberId, c.date) > 3) issues.push("Fangbegrenzung überschritten (max. 3 Fische mit Mindestmaß pro Tag)");
   return issues;
 }
 function dailyProtectedTake(memberId, date){
@@ -2078,20 +1983,16 @@ function renderStockTotals(id, rows){
   if(!totals.length){ el.innerHTML = `<div class="empty">Noch keine Bestandsdaten vorhanden.</div>`; return; }
   el.innerHTML = `<div class="table-wrap stock-table"><table><thead><tr><th>Fischart</th><th>Gesamt</th><th>Verteilung</th></tr></thead><tbody>${totals.map(t => { const parts = rows.filter(r => sameId(r.fishId, t.fishId) && Number(r.count) !== 0).map(r => `${byId(waters(), r.waterId)?.name || "?"}: ${r.count}`).join(" / "); return `<tr class="tinted-row" style="--row-color:${fishColor(t.fishId)}"><td>${byId(fishTypes(), t.fishId)?.name || ""}</td><td>${t.count}</td><td>${parts}</td></tr>`; }).join("")}</tbody></table></div>`;
 }
-function stockTypeLabel(type){
-  return type === "korrektur_minus" ? "Korrektur minus" : (type === "korrektur_plus" ? "Korrektur plus" : "Besatz");
-}
 function renderStockMovements(){
   renderStockByWater("currentStockTable", stockBalanceRows());
   const rows = stockMovements().sort((a,b)=>new Date(b.date)-new Date(a.date));
   const el = document.getElementById("stockTable");
   if(!el) return;
   if(!rows.length){ el.innerHTML = `<div class="empty">Noch kein Besatz eingetragen.</div>`; return; }
-  el.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Datum</th><th>Art</th><th>Gewässer</th><th>Fischart</th><th>Anzahl</th><th>Bemerkung</th><th>Aktion</th></tr></thead><tbody>${rows.map(m => `<tr><td>${formatDate(m.date)}</td><td>${stockTypeLabel(m.type)}</td><td>${byId(waters(), m.waterId)?.name || ""}</td><td>${byId(fishTypes(), m.fishId)?.name || ""}</td><td>${m.count}</td><td>${m.note || "–"}</td><td><div class="actions catch-actions"><button class="btn-light btn-small" onclick="editStockMovement(${jsId(m.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteStockMovement(${jsId(m.id)})">Löschen</button></div></td></tr>`).join("")}</tbody></table></div>`;
+  el.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Datum</th><th>Art</th><th>Gewässer</th><th>Fischart</th><th>Anzahl</th><th>Bemerkung</th></tr></thead><tbody>${rows.map(m => `<tr><td>${formatDate(m.date)}</td><td>${m.type === "korrektur_minus" ? "Korrektur minus" : (m.type === "korrektur_plus" ? "Korrektur plus" : "Besatz")}</td><td>${byId(waters(), m.waterId)?.name || ""}</td><td>${byId(fishTypes(), m.fishId)?.name || ""}</td><td>${m.count}</td><td>${m.note || "–"}</td></tr>`).join("")}</tbody></table></div>`;
 }
 async function saveStockMovement(){
   if(role() === "mitglied"){ alert("Bestände dürfen nur Vorstand, Gewässerwart oder Administrator pflegen."); return; }
-  const editId = document.getElementById("stockEditId")?.value || "";
   const date = document.getElementById("stockDate").value;
   const count = Number(document.getElementById("stockCount").value);
   if(!date || !count || count < 1){ notice("adminNotice","error","Bitte Datum und Anzahl eintragen."); return; }
@@ -2104,220 +2005,18 @@ async function saveStockMovement(){
     note:document.getElementById("stockNote").value.trim() || null
   };
   try{
-    const row = await saveSimpleRow("stock_movements", payload, editId);
+    const row = await saveSimpleRow("stock_movements", payload);
     const item = normalizeStock(row);
-    const current = stockMovements();
-    if(editId){
-      saveStockMovements(current.map(m => sameId(m.id, editId) ? item : m));
-      notice("adminNotice","ok","Bestandsbewegung wurde aktualisiert.");
-    } else {
-      saveStockMovements([item, ...current]);
-      notice("adminNotice","ok","Bestandsbewegung wurde gespeichert.");
-    }
-    cancelStockEdit(false);
+    saveStockMovements([item, ...stockMovements()]);
+    document.getElementById("stockCount").value = 1;
+    document.getElementById("stockNote").value = "";
     renderAll();
+    notice("adminNotice","ok","Bestandsbewegung wurde gespeichert.");
   }catch(err){
     notice("adminNotice","error","Bestandsbewegung konnte nicht gespeichert werden: " + err.message);
   }
 }
-function editStockMovement(id){
-  if(role() === "mitglied"){ alert("Bestände dürfen nur Vorstand, Gewässerwart oder Administrator pflegen."); return; }
-  const item = byId(stockMovements(), id);
-  if(!item) return;
-  document.getElementById("stockEditId").value = item.id;
-  document.getElementById("stockDate").value = item.date || "";
-  document.getElementById("stockWater").value = item.waterId;
-  document.getElementById("stockFish").value = item.fishId;
-  document.getElementById("stockCount").value = item.count || 1;
-  document.getElementById("stockType").value = item.type || "besatz";
-  document.getElementById("stockNote").value = item.note || "";
-  document.getElementById("stockFormTitle").textContent = "Bestandsbewegung bearbeiten";
-  document.getElementById("stockSubmitButton").textContent = "Änderung speichern";
-  clearNotice("adminNotice");
-  document.getElementById("stockDate").scrollIntoView({behavior:"smooth", block:"center"});
-}
-function cancelStockEdit(clear=true){
-  const edit = document.getElementById("stockEditId");
-  if(edit) edit.value = "";
-  const date = document.getElementById("stockDate");
-  if(date) date.valueAsDate = new Date();
-  document.getElementById("stockCount").value = 1;
-  document.getElementById("stockType").value = "besatz";
-  document.getElementById("stockNote").value = "";
-  document.getElementById("stockFormTitle").textContent = "Besatz eintragen";
-  document.getElementById("stockSubmitButton").textContent = "Bestand buchen";
-  if(clear) clearNotice("adminNotice");
-}
-async function deleteStockMovement(id){
-  if(role() === "mitglied"){ alert("Bestände dürfen nur Vorstand, Gewässerwart oder Administrator pflegen."); return; }
-  const item = byId(stockMovements(), id);
-  if(!item) return;
-  const fish = byId(fishTypes(), item.fishId)?.name || "Fischart";
-  const water = byId(waters(), item.waterId)?.name || "Gewässer";
-  if(!confirm(`${stockTypeLabel(item.type)} vom ${formatDate(item.date)} für ${water} / ${fish} wirklich löschen?`)) return;
-  try{
-    await deleteSimpleRow("stock_movements", id);
-    saveStockMovements(stockMovements().filter(m => !sameId(m.id, id)));
-    if(sameId(document.getElementById("stockEditId")?.value, id)) cancelStockEdit(false);
-    renderAll();
-    notice("adminNotice","ok","Bestandsbewegung wurde gelöscht.");
-  }catch(err){
-    notice("adminNotice","error","Bestandsbewegung konnte nicht gelöscht werden: " + err.message);
-  }
-}
 
-
-
-function csvEscape(value){
-  const text = String(value ?? "");
-  return '"' + text.replace(/"/g, '""') + '"';
-}
-function downloadTextFile(filename, content, mime="text/plain;charset=utf-8"){
-  const blob = new Blob([content], {type:mime});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-function reportFilters(){
-  const year = Number(document.getElementById("reportYear")?.value || new Date().getFullYear());
-  const waterId = document.getElementById("reportWater")?.value || "";
-  let list = catches().filter(c => new Date(c.date).getFullYear() === year);
-  if(waterId) list = list.filter(c => sameId(c.waterId, waterId));
-  return {year, waterId, list:list.sort((a,b)=>new Date(a.date)-new Date(b.date))};
-}
-function reportRows(list){
-  return list.map(c => {
-    const m = byId(members(), c.memberId), w = byId(waters(), c.waterId), f = byId(fishTypes(), c.fishId);
-    const target = c.targetWaterId ? byId(waters(), c.targetWaterId) : null;
-    return {
-      Datum: formatDate(c.date),
-      Mitgliedsnummer: m?.nr || "",
-      Mitglied: m?.name || "",
-      Gewässer: w?.name || "",
-      Fischart: f?.name || "",
-      Länge_cm: c.length || "",
-      Gewicht_g: c.weight || "",
-      Anzahl: c.count || 1,
-      Fangart: c.status === "umgesetzt" ? `umgesetzt nach ${target?.name || ""}` : c.status,
-      Bemerkung: c.note || ""
-    };
-  });
-}
-function exportYearCsv(){
-  const {year, waterId, list} = reportFilters();
-  const rows = reportRows(list);
-  const headers = ["Datum","Mitgliedsnummer","Mitglied","Gewässer","Fischart","Länge_cm","Gewicht_g","Anzahl","Fangart","Bemerkung"];
-  const csv = [headers.map(csvEscape).join(";"), ...rows.map(r => headers.map(h => csvEscape(r[h])).join(";"))].join("\n");
-  const suffix = waterId ? "_" + (byId(waters(), waterId)?.name || "gewaesser").replace(/[^a-z0-9äöüß]+/gi,"_") : "";
-  downloadTextFile(`ASV_Jahresbericht_${year}${suffix}.csv`, "\ufeff" + csv, "text/csv;charset=utf-8");
-}
-function exportYearPdf(){
-  const {year, waterId, list} = reportFilters();
-  const rows = reportRows(list);
-  const waterTitle = waterId ? byId(waters(), waterId)?.name || "Gewässer" : "Alle Gewässer";
-  const total = list.reduce((s,c)=>s+Number(c.count||1),0);
-  const entnommen = list.filter(c=>c.status==="entnommen").reduce((s,c)=>s+Number(c.count||1),0);
-  const zurueck = list.filter(c=>c.status==="zurueckgesetzt").reduce((s,c)=>s+Number(c.count||1),0);
-  const umgesetzt = list.filter(c=>c.status==="umgesetzt").reduce((s,c)=>s+Number(c.count||1),0);
-  const html = `<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>ASV Jahresbericht ${year}</title><style>
-    body{font-family:Arial,sans-serif;color:#183027;margin:24px}h1{margin:0 0 4px}h2{margin:0 0 18px;color:#0f4c3d}.meta{margin:12px 0 18px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}.stat{border:1px solid #b9dacf;border-radius:10px;padding:10px}.stat strong{display:block;font-size:22px;color:#0f4c3d}table{width:100%;border-collapse:collapse;font-size:12px}th,td{border-bottom:1px solid #d8ebe4;padding:7px;text-align:left;vertical-align:top}th{background:#edf7f2;color:#0f4c3d}@media print{button{display:none}body{margin:12mm}}
-  </style></head><body><button onclick="window.print()">Drucken / als PDF speichern</button><h1>ASV Mellrichstadt e.V.</h1><h2>Jahresbericht Fangbuch ${year}</h2><div class="meta"><strong>Gewässer:</strong> ${waterTitle}<br><strong>Erstellt am:</strong> ${new Date().toLocaleDateString("de-DE")}</div><div class="stats"><div class="stat"><strong>${total}</strong>Gesamt</div><div class="stat"><strong>${entnommen}</strong>Entnommen</div><div class="stat"><strong>${zurueck}</strong>Zurückgesetzt</div><div class="stat"><strong>${umgesetzt}</strong>Umgesetzt</div></div><table><thead><tr>${Object.keys(rows[0] || {Datum:"",Mitgliedsnummer:"",Mitglied:"",Gewässer:"",Fischart:"",Länge_cm:"",Gewicht_g:"",Anzahl:"",Fangart:"",Bemerkung:""}).map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${Object.values(r).map(v=>`<td>${String(v ?? "").replace(/[&<>]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[ch]))}</td>`).join("")}</tr>`).join("")}</tbody></table><script>setTimeout(()=>window.print(),400)<\/script></body></html>`;
-  const win = window.open("", "_blank");
-  if(!win){ alert("Popup wurde blockiert. Bitte Popups für diese Seite erlauben."); return; }
-  win.document.open();
-  win.document.write(html);
-  win.document.close();
-}
-function renderReportControls(){
-  const yearEl = document.getElementById("reportYear");
-  const waterEl = document.getElementById("reportWater");
-  if(!yearEl || !waterEl) return;
-  const years = [...new Set(catches().map(c => new Date(c.date).getFullYear()))].filter(Number.isFinite).sort((a,b)=>b-a);
-  const current = new Date().getFullYear();
-  if(!years.includes(current)) years.unshift(current);
-  keepSelect("reportYear", years.map(y=>`<option value="${y}">${y}</option>`).join(""));
-  keepSelect("reportWater", `<option value="">Alle Gewässer</option>` + waters().map(w=>`<option value="${w.id}">${w.name}</option>`).join(""));
-  const {list} = reportFilters();
-  const box = document.getElementById("reportSummary");
-  if(box) box.textContent = `${list.length} Fangmeldungen im gewählten Jahresbericht.`;
-}
-function renderRules(){
-  const currentRules = rules();
-  const maxTake = document.getElementById("ruleMaxProtectedTake");
-  const maxSingle = document.getElementById("ruleMaxSingleCatch");
-  const waterSelect = document.getElementById("waterRuleWater");
-  if(maxTake) maxTake.value = currentRules.maxProtectedTakePerDay || 3;
-  if(maxSingle) maxSingle.value = currentRules.maxSingleCatchCount || 50;
-  if(waterSelect) waterSelect.innerHTML = waters().map(w => `<option value="${w.id}">${w.name}</option>`).join("");
-  const box = document.getElementById("waterRulesTable");
-  if(!box) return;
-  const activeRules = (currentRules.waterRules || []).filter(r => r.active !== false);
-  if(!activeRules.length){ box.innerHTML = `<div class="empty">Noch keine besonderen Gewässerregeln hinterlegt.</div>`; return; }
-  box.innerHTML = `<div class="rule-list">${activeRules.map(r => `<div class="rule-item"><div><strong>${byId(waters(), r.waterId)?.name || "Gewässer"}</strong><br>${r.text}</div><button class="btn-danger btn-small" type="button" onclick="deleteWaterRule(${jsId(r.id)})">Entfernen</button></div>`).join("")}</div>`;
-}
-async function savePlausibilitySettings(){
-  if(!hasBoardAccess()){ alert("Regeln dürfen nur Vorstand oder Administrator ändern."); return; }
-  const maxProtectedTakePerDay = Number(document.getElementById("ruleMaxProtectedTake")?.value || 3);
-  const maxSingleCatchCount = Number(document.getElementById("ruleMaxSingleCatch")?.value || 50);
-  if(maxProtectedTakePerDay < 1 || maxSingleCatchCount < 1){ notice("adminNotice","error","Bitte gültige Werte größer 0 eintragen."); return; }
-  const currentRules = rules();
-  try{
-    if(supabaseConfigured()){
-      const payload = {max_protected_take_per_day:maxProtectedTakePerDay, max_single_catch_count:maxSingleCatchCount};
-      const id = currentRules.id || 1;
-      const {data,error} = await supabaseClient.from("plausibility_settings").update(payload).eq("id", id).select().maybeSingle();
-      if(error) throw error;
-      if(!data){
-        const inserted = await supabaseClient.from("plausibility_settings").insert(payload).select().single();
-        dbError(inserted.error);
-        currentRules.id = inserted.data.id;
-      }
-    }
-    saveRules({...currentRules,maxProtectedTakePerDay,maxSingleCatchCount});
-    notice("adminNotice","ok","Plausibilitätsregeln wurden gespeichert.");
-    renderAll();
-  }catch(err){ notice("adminNotice","error","Regeln konnten nicht gespeichert werden: " + err.message); }
-}
-async function saveWaterRule(){
-  if(!hasBoardAccess()){ alert("Regeln dürfen nur Vorstand oder Administrator ändern."); return; }
-  const waterId = document.getElementById("waterRuleWater")?.value;
-  const text = (document.getElementById("waterRuleText")?.value || "").trim();
-  if(!waterId || !text){ notice("adminNotice","error","Bitte Gewässer und Regeltext eintragen."); return; }
-  try{
-    let item;
-    if(supabaseConfigured()){
-      const {data,error} = await supabaseClient.from("water_rules").insert({water_id:String(waterId), rule_text:text, active:true}).select().single();
-      dbError(error);
-      item = normalizeWaterRule(data);
-    } else {
-      item = {id:Date.now(), waterId:String(waterId), text, active:true, createdAt:new Date().toISOString()};
-    }
-    const currentRules = rules();
-    saveRules({...currentRules, waterRules:[item, ...(currentRules.waterRules || [])]});
-    document.getElementById("waterRuleText").value = "";
-    notice("adminNotice","ok","Gewässerregel wurde gespeichert.");
-    renderAll();
-  }catch(err){ notice("adminNotice","error","Gewässerregel konnte nicht gespeichert werden: " + err.message); }
-}
-async function deleteWaterRule(id){
-  if(!hasBoardAccess()){ alert("Regeln dürfen nur Vorstand oder Administrator ändern."); return; }
-  if(!confirm("Gewässerregel wirklich entfernen?")) return;
-  try{
-    if(supabaseConfigured()){
-      const {error} = await supabaseClient.from("water_rules").update({active:false}).eq("id", id);
-      dbError(error);
-    }
-    const currentRules = rules();
-    saveRules({...currentRules, waterRules:(currentRules.waterRules || []).filter(r => !sameId(r.id, id))});
-    notice("adminNotice","ok","Gewässerregel wurde entfernt.");
-    renderAll();
-  }catch(err){ notice("adminNotice","error","Gewässerregel konnte nicht entfernt werden: " + err.message); }
-}
 
 function showAdminPanel(name){
   document.querySelectorAll(".admin-panel").forEach(p => p.style.display = "none");
@@ -2330,7 +2029,7 @@ function adminTable(headers, rows){
   return `<div class="table-wrap"><table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
 }
 function memberStatusLabel(status){
-  return ({aktiv:"Aktives Mitglied",neu:"Neues Mitglied",ehrenmitglied:"Ehrenmitglied",pausierend:"Pausierend",archiviert:"Archiviert"})[status] || "Aktives Mitglied";
+  return ({aktiv:"Aktives Mitglied",neu:"Neues Mitglied",ehrenmitglied:"Ehrenmitglied",pausierend:"Pausierend"})[status] || "Aktives Mitglied";
 }
 function roleLabel(role){
   return roles().find(r => r.id === role)?.label || role || "Mitglied";
@@ -2436,11 +2135,6 @@ async function loginMember(){
       alert("Login erfolgreich, aber kein Mitgliedsprofil gefunden. In der Tabelle members muss auth_user_id auf diesen Supabase Benutzer zeigen.");
       return;
     }
-    if(member.status === "archiviert"){
-      await supabaseClient.auth.signOut();
-      alert("Dieses Mitglied ist archiviert und kann sich nicht mehr anmelden.");
-      return;
-    }
     sessionStorage.setItem("asv_current_member_id", String(member.id));
     document.getElementById("loginPassword").value = "";
     applySessionView();
@@ -2485,7 +2179,7 @@ function applySessionView(){
     passwordCard.style.display = "";
     passwordCard.classList.add("collapsed");
     passwordCard.classList.remove("expanded");
-    logoutButton.style.display = "none";
+    if(logoutButton) logoutButton.style.display = "none";
     loginCard.style.display = "none";
     topbar.style.display = "flex";
     if(accountTools) accountTools.style.display = "flex";
@@ -2496,7 +2190,7 @@ function applySessionView(){
     passwordCard.style.display = "none";
     passwordCard.classList.add("collapsed");
     passwordCard.classList.remove("expanded");
-    logoutButton.style.display = "none";
+    if(logoutButton) logoutButton.style.display = "none";
     loginCard.style.display = "flex";
     topbar.style.display = "flex";
     if(accountTools) accountTools.style.display = "none";
@@ -2549,7 +2243,7 @@ function renderMemberFilterOptions(){
   const statusSelect = document.getElementById("memberStatusFilter");
   const roleSelectFilter = document.getElementById("memberRoleFilter");
   if(!statusSelect || !roleSelectFilter) return;
-  keepSelect("memberStatusFilter", `<option value="">Alle Status</option><option value="aktiv">Aktiv</option><option value="neu">Neu</option><option value="ehrenmitglied">Ehrenmitglied</option><option value="pausierend">Pausierend</option><option value="archiviert">Archiviert</option>`);
+  keepSelect("memberStatusFilter", `<option value="">Alle Status</option><option value="aktiv">Aktiv</option><option value="neu">Neu</option><option value="ehrenmitglied">Ehrenmitglied</option><option value="pausierend">Pausierend</option>`);
   keepSelect("memberRoleFilter", `<option value="">Alle Rollen</option>` + roles().map(r => `<option value="${r.id}">${r.label}</option>`).join(""));
 }
 function filteredMembersForAdmin(){
@@ -2582,10 +2276,10 @@ function renderCustomRoles(){
   box.textContent = custom.length ? `Eigene Rollen: ${custom.map(r => r.label).join(", ")}` : "Noch keine eigenen Rollen angelegt.";
 }
 function renderAdmin(){
-  const canResetPassword = false;
   renderMemberFilterOptions();
   renderCustomRoles();
-  const memRows = filteredMembersForAdmin().map(m => `<tr><td>${m.nr}</td><td>${m.name}</td><td>${memberStatusLabel(m.status)}</td><td>${roleLabel(m.role)}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editMember(${jsId(m.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteMember(${jsId(m.id)})">Löschen</button></div></td></tr>`);
+  const canResetPassword = role() === "admin";
+  const memRows = filteredMembersForAdmin().map(m => `<tr><td>${m.nr}</td><td>${m.name}</td><td>${memberStatusLabel(m.status)}</td><td>${roleLabel(m.role)}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editMember(${jsId(m.id)})">Bearbeiten</button>${canResetPassword ? `<button class="btn-light btn-small" onclick="resetMemberPassword(${jsId(m.id)})">Passwort neu</button>` : ""}<button class="btn-danger btn-small" onclick="deleteMember(${jsId(m.id)})">Löschen</button></div></td></tr>`);
   document.getElementById("membersTable").innerHTML = memRows.length ? adminTable(["Nr.","Name","Status","Rolle","Aktion"], memRows) : `<div class="empty">Keine Mitglieder passend zum Filter.</div>`;
   const watRows = waters().map(w => `<tr><td><span class="color-swatch" style="background:${waterColor(w.id)}"></span></td><td>${w.name}</td><td>${w.type}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editWater(${jsId(w.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteWater(${jsId(w.id)})">Löschen</button></div></td></tr>`);
   document.getElementById("watersTable").innerHTML = adminTable(["Farbe","Name","Typ","Aktion"], watRows);
@@ -2756,7 +2450,6 @@ async function resetLocalTestData(){
   cancelMemberEdit(false);
   cancelWaterEdit(false);
   cancelFishEdit(false);
-  if(typeof cancelStockEdit === "function") cancelStockEdit(false);
   appState = null;
   await loadCloudData();
   renderAll();
@@ -2768,37 +2461,12 @@ function renderAll(){
   renderMyCatches();
   renderOverview();
   renderStats();
-  renderReportControls();
   renderAdmin();
-  renderRules();
-}
-if("serviceWorker" in navigator){
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch(err => console.warn("Service Worker konnte nicht registriert werden:", err));
-  });
 }
 init();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
