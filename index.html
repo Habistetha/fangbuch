@@ -318,6 +318,164 @@
       .form-grid,.filters,.stats,.admin-grid{grid-template-columns:1fr}
       .card-head{flex-direction:column;align-items:flex-start}
     }
+  
+    /* Mobile Optimierung v1.1 */
+    @media (max-width: 720px){
+      body{
+        min-height:100svh;
+        overflow-x:hidden;
+      }
+      body:before{
+        opacity:.22;
+        background-position:center top;
+      }
+      .app{
+        width:100%;
+        min-height:100svh;
+        padding:18px 14px 28px;
+        display:flex;
+        flex-direction:column;
+        justify-content:flex-start;
+      }
+      body:not(.app-mode) .app{
+        justify-content:flex-start;
+      }
+      .page-title{
+        font-size:38px;
+        line-height:1;
+        margin:14px 0 12px;
+        letter-spacing:-.04em;
+      }
+      .login-brand{
+        margin-bottom:18px;
+      }
+      .login-brand.logo-only img{
+        width:132px;
+        height:132px;
+        border-radius:26px;
+        padding:8px;
+      }
+      .topbar{
+        width:100%;
+        margin:0 auto 14px;
+        padding:0;
+      }
+      #loginCard{
+        width:100%;
+        max-width:430px;
+        margin:0 auto;
+        display:grid;
+        grid-template-columns:1fr;
+        gap:12px;
+        padding:18px;
+        border-radius:24px;
+        background:rgba(255,255,255,.94);
+        box-shadow:0 18px 38px rgba(9,44,36,.18);
+      }
+      #loginCard strong{
+        text-align:center;
+        font-size:18px;
+        margin-bottom:2px;
+      }
+      #loginEmail,
+      #loginPassword{
+        width:100%;
+        min-width:0;
+        height:52px;
+        font-size:16px;
+        border-radius:16px;
+      }
+      #loginCard button{
+        width:100%;
+        min-height:52px;
+        border-radius:16px;
+        font-size:15px;
+        justify-content:center;
+      }
+      .forgot-link{
+        background:#f6fbf9;
+      }
+      #passwordChangeCard{
+        width:100%;
+        max-width:430px;
+        margin:0 auto;
+        display:grid !important;
+        grid-template-columns:1fr;
+        gap:10px;
+        padding:16px;
+        border-radius:22px;
+      }
+      #passwordChangeCard[style*="display: none"]{
+        display:none !important;
+      }
+      .tabs{
+        width:100%;
+        padding:6px 2px 10px;
+        gap:7px;
+      }
+      .tab{
+        padding:10px 12px;
+        font-size:14px;
+      }
+      .card{
+        border-radius:20px;
+        margin:0 0 14px;
+      }
+      .card-head{
+        padding:15px 16px;
+      }
+      .card-head h2{
+        font-size:20px;
+      }
+      .card-body{
+        padding:16px;
+      }
+      .form-grid,
+      .filters,
+      .member-filters,
+      .admin-grid{
+        grid-template-columns:1fr !important;
+      }
+      .admin-tabs{
+        display:grid;
+        grid-template-columns:1fr;
+      }
+      .admin-tab{
+        width:100%;
+      }
+      .panel{
+        padding:14px;
+        border-radius:18px;
+      }
+      .table-wrap{
+        border-radius:16px;
+      }
+      .footer{
+        margin-top:auto;
+        padding-top:18px;
+        font-size:12px;
+        line-height:1.35;
+      }
+    }
+
+    @media (max-width: 380px){
+      .page-title{
+        font-size:34px;
+      }
+      .login-brand.logo-only img{
+        width:118px;
+        height:118px;
+      }
+      #loginCard{
+        padding:15px;
+      }
+      #loginEmail,
+      #loginPassword,
+      #loginCard button{
+        min-height:50px;
+      }
+    }
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -624,7 +782,7 @@
         </article>
       </section>
     </main>
-    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.0</div>
+    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.1</div>
   </div>
 
 <script>
