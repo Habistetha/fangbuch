@@ -975,8 +975,8 @@
                     </select>
                   </div><br>
                   <div class="field"><label>Mindestmaß in cm</label><input id="fishMin" type="number" min="0" step="1" placeholder="leer lassen, falls offen"></div><br>
-                  <div class="field"><label>Schonzeit von</label><input id="fishClosedFrom" type="date"></div><br>
-                  <div class="field"><label>Schonzeit bis</label><input id="fishClosedTo" type="date"></div><br>
+                  <div class="field"><label>Schonzeit von</label><input id="fishClosedFrom" type="text" inputmode="numeric" maxlength="5" placeholder="TT.MM"></div><br>
+                  <div class="field"><label>Schonzeit bis</label><input id="fishClosedTo" type="text" inputmode="numeric" maxlength="5" placeholder="TT.MM"></div><br>
                   <div class="field"><label>Max. Entnahme pro Tag</label><input id="fishMaxDay" type="number" min="0" step="1" placeholder="leer = keine Grenze"></div><br>
                   <div class="field"><label>Max. Entnahme pro Woche</label><input id="fishMaxWeek" type="number" min="0" step="1" placeholder="leer = keine Grenze"></div><br>
                   <div class="field"><label>Max. Entnahme pro Monat</label><input id="fishMaxMonth" type="number" min="0" step="1" placeholder="leer = keine Grenze"></div><br>
@@ -1380,8 +1380,8 @@ function normalizeFish(row){
     min: row.min_size_cm ?? row.min ?? null,
     min_size_cm: row.min_size_cm ?? row.min ?? null,
     category: row.category ?? "sonstige",
-    closed_from: row.closed_from ?? row.closedFrom ?? null,
-    closed_to: row.closed_to ?? row.closedTo ?? null,
+    closed_from: row.closed_from ? formatDayMonth(row.closed_from) : (row.closedFrom ? formatDayMonth(row.closedFrom) : null),
+    closed_to: row.closed_to ? formatDayMonth(row.closed_to) : (row.closedTo ? formatDayMonth(row.closedTo) : null),
     max_per_day: row.max_per_day ?? row.maxPerDay ?? null,
     max_per_week: row.max_per_week ?? row.maxPerWeek ?? null,
     max_per_month: row.max_per_month ?? row.maxPerMonth ?? null,
@@ -1579,6 +1579,10 @@ async function init(){
     alert("Supabase konnte nicht geladen werden: " + err.message);
   }
   resetCatchForm();
+  ["fishClosedFrom","fishClosedTo"].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.addEventListener("blur", () => { el.value = normalizeDayMonth(el.value); });
+  });
   if(document.getElementById("stockDate")) document.getElementById("stockDate").valueAsDate = new Date();
   renderAll();
   applySessionView();
@@ -1687,7 +1691,7 @@ function showFishHint(){
   const parts = [];
   parts.push(f.min ? `Mindestmaß: ${f.min} cm` : "Kein Mindestmaß hinterlegt");
   parts.push(`Kategorie: ${categoryLabel(f.category)}`);
-  if(f.closed_from && f.closed_to) parts.push(`Schonzeit: ${formatDate(f.closed_from)} bis ${formatDate(f.closed_to)}`);
+  if(f.closed_from && f.closed_to) parts.push(`Schonzeit: ${formatDayMonth(f.closed_from)} bis ${formatDayMonth(f.closed_to)}`);
   if(f.take_allowed === false) parts.push("Entnahme nicht erlaubt");
   if(f.max_per_day) parts.push(`max. ${f.max_per_day} pro Tag`);
   if(f.max_per_week) parts.push(`max. ${f.max_per_week} pro Woche`);
@@ -1759,12 +1763,47 @@ document.getElementById("catchForm").addEventListener("submit", async e => {
 });
 
 function formatDate(v){ return v ? new Date(v + "T00:00:00").toLocaleDateString("de-DE") : ""; }
-function dateInRange(dateValue, fromValue, toValue){
+function normalizeDayMonth(value){
+  const raw = String(value || "").trim();
+  if(!raw) return "";
+  const m = raw.match(/^(\d{1,2})\.?(\d{1,2})$/);
+  if(!m) return raw;
+  const day = String(Number(m[1])).padStart(2,"0");
+  const month = String(Number(m[2])).padStart(2,"0");
+  return `${day}.${month}`;
+}
+function validDayMonth(value){
+  const v = normalizeDayMonth(value);
+  const m = v.match(/^(\d{2})\.(\d{2})$/);
+  if(!m) return false;
+  const day = Number(m[1]), month = Number(m[2]);
+  if(month < 1 || month > 12 || day < 1 || day > 31) return false;
+  const test = new Date(2024, month - 1, day);
+  return test.getMonth() === month - 1 && test.getDate() === day;
+}
+function dayMonthNumber(value){
+  const v = normalizeDayMonth(value);
+  const m = v.match(/^(\d{2})\.(\d{2})$/);
+  if(!m) return null;
+  return Number(m[2]) * 100 + Number(m[1]);
+}
+function formatDayMonth(value){
+  if(!value) return "";
+  if(String(value).includes("-")){
+    const d = new Date(String(value) + "T00:00:00");
+    if(!Number.isNaN(d.getTime())) return String(d.getDate()).padStart(2,"0") + "." + String(d.getMonth()+1).padStart(2,"0");
+  }
+  return normalizeDayMonth(value);
+}
+function isInClosedSeason(dateValue, fromValue, toValue){
   if(!dateValue || !fromValue || !toValue) return false;
-  const date = new Date(dateValue + "T00:00:00");
-  const from = new Date(fromValue + "T00:00:00");
-  const to = new Date(toValue + "T00:00:00");
-  return date >= from && date <= to;
+  const d = new Date(dateValue + "T00:00:00");
+  const current = (d.getMonth() + 1) * 100 + d.getDate();
+  const from = dayMonthNumber(formatDayMonth(fromValue));
+  const to = dayMonthNumber(formatDayMonth(toValue));
+  if(from === null || to === null) return false;
+  if(from <= to) return current >= from && current <= to;
+  return current >= from || current <= to;
 }
 function weekKey(dateValue){
   const d = new Date(dateValue + "T00:00:00");
@@ -1800,7 +1839,7 @@ function catchRuleIssues(c, excludeId=""){
   if(!f) return {errors, warnings};
   if(c.status === "entnommen" && f?.min && c.length && Number(c.length) < Number(f.min)) errors.push(`Unter Mindestmaß (${f.min} cm)`);
   if(c.status === "entnommen" && f.take_allowed === false) errors.push("Entnahme für diese Fischart nicht erlaubt");
-  if(c.status === "entnommen" && dateInRange(c.date, f.closed_from, f.closed_to)) errors.push(`Schonzeit (${formatDate(f.closed_from)} bis ${formatDate(f.closed_to)})`);
+  if(c.status === "entnommen" && isInClosedSeason(c.date, f.closed_from, f.closed_to)) errors.push(`Schonzeit (${formatDayMonth(f.closed_from)} bis ${formatDayMonth(f.closed_to)})`);
   const limits = [
     ["day", f.max_per_day, "Tageslimit"],
     ["week", f.max_per_week, "Wochenlimit"],
@@ -2423,7 +2462,7 @@ function renderAdmin(){
   document.getElementById("membersTable").innerHTML = memRows.length ? adminTable(["Nr.","Name","Status","Rolle","Aktion"], memRows) : `<div class="empty">Keine Mitglieder passend zum Filter.</div>`;
   const watRows = waters().map(w => `<tr><td><span class="color-swatch" style="background:${waterColor(w.id)}"></span></td><td>${w.name}</td><td>${w.type}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editWater(${jsId(w.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteWater(${jsId(w.id)})">Löschen</button></div></td></tr>`);
   document.getElementById("watersTable").innerHTML = adminTable(["Farbe","Name","Typ","Aktion"], watRows);
-  const fishRows = fishTypes().map(f => `<tr><td><span class="color-swatch" style="background:${fishColor(f.id)}"></span></td><td>${f.name}</td><td>${categoryLabel(f.category)}</td><td>${f.min ? f.min + " cm" : "offen"}</td><td>${f.closed_from && f.closed_to ? formatDate(f.closed_from) + " bis " + formatDate(f.closed_to) : "–"}</td><td>${[f.max_per_day ? "Tag " + f.max_per_day : "", f.max_per_week ? "Woche " + f.max_per_week : "", f.max_per_month ? "Monat " + f.max_per_month : "", f.max_per_year ? "Jahr " + f.max_per_year : ""].filter(Boolean).join(" / ") || "–"}</td><td>${f.take_allowed === false ? "Nein" : "Ja"}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editFish(${jsId(f.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteFish(${jsId(f.id)})">Löschen</button></div></td></tr>`);
+  const fishRows = fishTypes().map(f => `<tr><td><span class="color-swatch" style="background:${fishColor(f.id)}"></span></td><td>${f.name}</td><td>${categoryLabel(f.category)}</td><td>${f.min ? f.min + " cm" : "offen"}</td><td>${f.closed_from && f.closed_to ? formatDayMonth(f.closed_from) + " bis " + formatDayMonth(f.closed_to) : "–"}</td><td>${[f.max_per_day ? "Tag " + f.max_per_day : "", f.max_per_week ? "Woche " + f.max_per_week : "", f.max_per_month ? "Monat " + f.max_per_month : "", f.max_per_year ? "Jahr " + f.max_per_year : ""].filter(Boolean).join(" / ") || "–"}</td><td>${f.take_allowed === false ? "Nein" : "Ja"}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editFish(${jsId(f.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteFish(${jsId(f.id)})">Löschen</button></div></td></tr>`);
   document.getElementById("fishTable").innerHTML = adminTable(["Farbe","Name","Kategorie","Mindestmaß","Schonzeit","Limits","Entnahme","Aktion"], fishRows);
   renderStockMovements();
 }
@@ -2535,8 +2574,10 @@ async function saveFish(){
   const min = minRaw === "" ? null : Number(minRaw);
   const color = document.getElementById("fishColor").value;
   const category = document.getElementById("fishCategory").value;
-  const closedFrom = document.getElementById("fishClosedFrom").value || null;
-  const closedTo = document.getElementById("fishClosedTo").value || null;
+  const closedFromRaw = document.getElementById("fishClosedFrom").value;
+  const closedToRaw = document.getElementById("fishClosedTo").value;
+  const closedFrom = closedFromRaw ? normalizeDayMonth(closedFromRaw) : null;
+  const closedTo = closedToRaw ? normalizeDayMonth(closedToRaw) : null;
   const maxDay = numberOrNull(document.getElementById("fishMaxDay").value);
   const maxWeek = numberOrNull(document.getElementById("fishMaxWeek").value);
   const maxMonth = numberOrNull(document.getElementById("fishMaxMonth").value);
@@ -2544,6 +2585,7 @@ async function saveFish(){
   const takeAllowed = document.getElementById("fishTakeAllowed").value === "true";
   if(!name){ notice("adminNotice","error","Bitte eine Fischart eintragen."); return; }
   if((closedFrom && !closedTo) || (!closedFrom && closedTo)){ notice("adminNotice","error","Bitte Schonzeit von und Schonzeit bis gemeinsam eintragen oder beide leer lassen."); return; }
+  if((closedFrom && !validDayMonth(closedFrom)) || (closedTo && !validDayMonth(closedTo))){ notice("adminNotice","error","Bitte Schonzeiten im Format TT.MM eintragen, zum Beispiel 15.02 oder 01.10."); return; }
   try{
     const row = normalizeFish(await saveSimpleRow("fish_types", {
       name,
@@ -2573,8 +2615,8 @@ function editFish(id){
   document.getElementById("fishName").value = f.name;
   document.getElementById("fishCategory").value = f.category || "sonstige";
   document.getElementById("fishMin").value = f.min ?? "";
-  document.getElementById("fishClosedFrom").value = f.closed_from || "";
-  document.getElementById("fishClosedTo").value = f.closed_to || "";
+  document.getElementById("fishClosedFrom").value = f.closed_from ? formatDayMonth(f.closed_from) : "";
+  document.getElementById("fishClosedTo").value = f.closed_to ? formatDayMonth(f.closed_to) : "";
   document.getElementById("fishMaxDay").value = f.max_per_day ?? "";
   document.getElementById("fishMaxWeek").value = f.max_per_week ?? "";
   document.getElementById("fishMaxMonth").value = f.max_per_month ?? "";
