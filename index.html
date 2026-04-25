@@ -1009,7 +1009,7 @@
         </article>
       </section>
     </main>
-    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.6</div>
+    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.7</div>
   </div>
 
 <script>
@@ -2277,9 +2277,10 @@ function renderCustomRoles(){
   box.textContent = custom.length ? `Eigene Rollen: ${custom.map(r => r.label).join(", ")}` : "Noch keine eigenen Rollen angelegt.";
 }
 function renderAdmin(){
+  const canResetPassword = false;
   renderMemberFilterOptions();
   renderCustomRoles();
-  const memRows = filteredMembersForAdmin().map(m => `<tr><td>${m.nr}</td><td>${m.name}</td><td>${memberStatusLabel(m.status)}</td><td>${roleLabel(m.role)}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editMember(${jsId(m.id)})">Bearbeiten</button>${canResetPassword ? `<button class="btn-light btn-small" onclick="resetMemberPassword(${jsId(m.id)})">Passwort neu</button>` : ""}<button class="btn-danger btn-small" onclick="deleteMember(${jsId(m.id)})">Löschen</button></div></td></tr>`);
+  const memRows = filteredMembersForAdmin().map(m => `<tr><td>${m.nr}</td><td>${m.name}</td><td>${memberStatusLabel(m.status)}</td><td>${roleLabel(m.role)}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editMember(${jsId(m.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteMember(${jsId(m.id)})">Löschen</button></div></td></tr>`);
   document.getElementById("membersTable").innerHTML = memRows.length ? adminTable(["Nr.","Name","Status","Rolle","Aktion"], memRows) : `<div class="empty">Keine Mitglieder passend zum Filter.</div>`;
   const watRows = waters().map(w => `<tr><td><span class="color-swatch" style="background:${waterColor(w.id)}"></span></td><td>${w.name}</td><td>${w.type}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editWater(${jsId(w.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteWater(${jsId(w.id)})">Löschen</button></div></td></tr>`);
   document.getElementById("watersTable").innerHTML = adminTable(["Farbe","Name","Typ","Aktion"], watRows);
