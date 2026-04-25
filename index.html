@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASV_Fangbuch</title>
+  <style>
+    :root{
+      --bg:#edf7f2;
+      --card:rgba(255,255,255,.94);
+      --text:#183027;
+      --muted:#667a72;
+      --green:#16765b;
+      --green2:#22948b;
+      --green-dark:#0f4c3d;
+      --aqua:#2aa6ad;
+      --line:rgba(22,118,91,.20);
+      --danger:#a9352d;
+      --danger-bg:#fff2f1;
+      --warn:#9b6500;
+      --shadow:0 20px 50px rgba(9,44,36,.15);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      background:#dcefe8;
+    }
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:-1;
+      background:url("Original beschriftet.jpg") center/cover fixed;
+      opacity:.30;
+    }
+    body.app-mode{background:#dcefe8 url("Original.jpg") center/cover fixed}
+    body.app-mode:before{display:none}
+    body:not(.app-mode) .app{min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+    body:not(.app-mode) main{display:none}
+    .app{width:min(1360px,calc(100% - 28px));margin:0 auto;padding:18px 0 42px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .hero{display:none}
+    .hero:after{content:"";display:none}
+    .hero-inner{display:none}
+    .logo-box{
+      width:125px;height:125px;
+      border-radius:26px;
+      background:rgba(255,255,255,.93);
+      display:grid;place-items:center;
+      padding:12px;
+      box-shadow:0 16px 32px rgba(0,0,0,.24)
+    }
+    .logo-box img{width:100%;height:100%;object-fit:contain}
+    .eyebrow{
+      display:inline-flex;
+      padding:7px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.15);
+      border:1px solid rgba(255,255,255,.25);
+      margin-bottom:12px;
+      font-weight:700;
+      color:rgba(255,255,255,.92)
+    }
+    h1{font-size:clamp(31px,5vw,54px);line-height:1;margin:0 0 10px;letter-spacing:-.04em}
+    .hero p{font-size:18px;line-height:1.45;max-width:760px;color:rgba(255,255,255,.90);margin:0}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+    button{
+      appearance:none;border:0;
+      border-radius:15px;
+      padding:12px 16px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s ease;
+      color:var(--text);
+    }
+    button:hover{transform:translateY(-1px)}
+    button:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.55);box-shadow:none}
+    button:disabled:hover{transform:none}
+    .btn-white{background:white;color:var(--green-dark);box-shadow:0 10px 22px rgba(0,0,0,.14)}
+    .btn-ghost{background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.26)}
+    .btn-main{background:linear-gradient(135deg,var(--green),var(--green2));color:white;box-shadow:0 10px 22px rgba(22,118,91,.24)}
+    .btn-light{background:white;color:var(--green-dark);border:1px solid var(--line)}
+    .btn-danger{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(169,53,45,.25)}
+    .btn-small{padding:8px 11px;font-size:13px}
+    .topbar{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:18px auto;width:min(1220px,100%)}
+    .role-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      box-shadow:0 10px 24px rgba(9,44,36,.08)
+    }
+    
+    
+    
+    #loginCard button{white-space:nowrap;min-height:48px}
+    #passwordChangeCard{width:min(1220px,100%)}
+    #loginMemberSearch{min-width:220px}
+    .color-input{width:72px;height:46px;padding:5px;cursor:pointer}
+    .color-swatch{display:inline-block;width:24px;height:24px;border-radius:8px;border:1px solid var(--line);vertical-align:middle;box-shadow:inset 0 0 0 2px rgba(255,255,255,.55)}
+    select,input,textarea{
+      box-sizing:border-box;
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:15px;
+      padding:12px 14px;
+      background:rgba(255,255,255,.96);
+      font:inherit;
+      color:var(--text);
+      outline:none;
+    }
+    select,input{height:48px}
+    textarea{min-height:88px;resize:vertical}
+    select:focus,input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(42,166,173,.13);border-color:rgba(42,166,173,.75)}
+    .tabs{display:none;gap:8px;overflow-x:auto;padding:4px 2px 10px}
+    .tab{background:rgba(255,255,255,.88);border:1px solid var(--line);color:var(--green-dark);white-space:nowrap}
+    .tab.active{background:linear-gradient(135deg,var(--green),var(--green2));color:white}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      margin-bottom:18px;
+    }
+    .card-head{
+      padding:18px 20px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      background:linear-gradient(135deg,rgba(255,255,255,.80),rgba(236,248,243,.86));
+    }
+    .card-head h2{margin:0;font-size:22px}
+    .card-body{padding:20px}
+    .hint{color:var(--muted);font-size:14px}
+    .section{display:none}
+    .section.active{display:block}
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .stat{background:white;border:1px solid var(--line);border-radius:18px;padding:15px}
+    .stat strong{display:block;font-size:28px;color:var(--green-dark);letter-spacing:-.03em}
+    .stat span{font-size:13px;color:var(--muted);font-weight:700}
+    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .field{display:grid;gap:7px}
+    .field.full{grid-column:1/-1}
+    label{font-weight:800;color:var(--muted);font-size:14px}
+    .segmented{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .segmented input{display:none}
+    .segmented label{border:1px solid var(--line);background:white;border-radius:15px;text-align:center;padding:13px;cursor:pointer;color:var(--text);font-size:15px}
+    .segmented input:checked + label{background:linear-gradient(135deg,var(--green),var(--green2));color:white;border-color:transparent}
+    .notice{display:none;margin-top:14px;padding:12px 14px;border-radius:15px;font-weight:750}
+    .notice.show{display:block}
+    .notice.ok{background:rgba(22,118,91,.10);color:var(--green-dark);border:1px solid rgba(22,118,91,.18)}
+    .notice.warn{background:rgba(155,101,0,.10);color:var(--warn);border:1px solid rgba(155,101,0,.18)}
+    .notice.error{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(169,53,45,.25)}
+    .filters{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+    .table-wrap{overflow:auto;background:white;border:1px solid var(--line);border-radius:18px}
+    table{width:100%;border-collapse:collapse;min-width:760px;background:white}
+    .stock-table{overflow:visible}
+    .stock-table table{min-width:0;table-layout:auto}
+    .stock-table th,.stock-table td{white-space:normal;word-break:normal}.nowrap{white-space:nowrap}.wide-table table{min-width:1080px}.catch-table table{min-width:1180px}.catch-table th:last-child,.catch-table td:last-child{min-width:190px;white-space:nowrap}
+    .stock-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+    .stock-group{border:1px solid var(--line);border-radius:16px;background:white;overflow:hidden;border-top:6px solid var(--group-color,#b9dacf)}
+    .stock-group h4{margin:0;padding:12px 14px;background:color-mix(in srgb,var(--group-color,#b9dacf) 18%,white);color:var(--green-dark)}
+    .tinted-row td{background:color-mix(in srgb,var(--row-color,#b9dacf) 10%,white)}
+    .member-filters{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;margin-bottom:12px}
+    .role-admin-tools{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+    .rule-bad td{background:#fff2f1;color:#621b17}
+    .rule-note{color:var(--danger);font-weight:800;font-size:13px}
+    th,td{padding:12px 13px;text-align:left;border-bottom:1px solid rgba(22,118,91,.13);font-size:14px;vertical-align:middle}
+    th{background:#edf7f2;color:var(--green-dark);font-size:13px}
+    tr:last-child td{border-bottom:0}
+    .badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:850;white-space:nowrap}
+    .badge.keep{background:rgba(22,118,91,.12);color:var(--green-dark)}
+    .badge.release{background:rgba(42,166,173,.13);color:#176273}
+    .admin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .admin-tab{background:white;border:1px solid var(--line);color:var(--green-dark)}
+    .admin-tab.active{background:linear-gradient(135deg,var(--green),var(--green2));color:white}
+    .admin-grid{display:grid;grid-template-columns:380px 1fr;gap:16px}
+    .panel{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.78);padding:16px}
+    .panel h3{margin:0 0 14px}.panel.full{grid-column:1/-1}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .catch-actions{flex-wrap:nowrap;min-width:max-content}
+
+    .login-brand{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      margin-bottom:18px;
+      text-align:center;
+    }
+    .login-brand img{
+      width:92px;
+      height:92px;
+      object-fit:contain;
+      border-radius:22px;
+      background:rgba(255,255,255,.92);
+      padding:8px;
+      box-shadow:0 14px 28px rgba(9,44,36,.18);
+    }
+    .login-brand strong{
+      display:block;
+      font-size:24px;
+      color:var(--green-dark);
+      letter-spacing:-.03em;
+    }
+    .login-brand span{
+      display:block;
+      color:var(--muted);
+      font-weight:750;
+      margin-top:3px;
+    }
+    .forgot-link{
+      background:white;
+      color:var(--green-dark);
+      border:1px solid var(--line);
+      box-shadow:0 10px 22px rgba(9,44,36,.08);
+      text-decoration:none;
+    }
+    .forgot-link:hover{transform:translateY(-1px);color:var(--green-dark)}
+
+
+    .page-title{
+      text-align:center;
+      font-size:46px;
+      font-weight:900;
+      letter-spacing:-0.04em;
+      color:var(--green-dark);
+      margin:18px 0 12px;
+      text-shadow:0 3px 10px rgba(255,255,255,.55);
+    }
+    .login-brand{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      margin:0 auto 20px;
+      text-align:center;
+      width:100%;
+    }
+    .login-brand.logo-only img{
+      width:170px;
+      height:170px;
+      object-fit:contain;
+      border-radius:30px;
+      background:rgba(255,255,255,.96);
+      padding:10px;
+      box-shadow:0 18px 35px rgba(9,44,36,.18);
+    }
+    #loginCard{
+      width:min(1420px, calc(100vw - 44px));
+      max-width:1420px;
+      box-sizing:border-box;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      padding:16px 18px;
+      margin:0 auto;
+    }
+    #loginCard strong{
+      white-space:nowrap;
+      font-size:20px;
+    }
+    #loginEmail{
+      min-width:380px;
+      flex:1 1 420px;
+    }
+    #loginPassword{
+      min-width:260px;
+      flex:0 1 300px;
+    }
+    #loginCard button{
+      white-space:nowrap;
+      min-height:48px;
+      flex:0 0 auto;
+    }
+    .topbar{
+      justify-content:center;
+      margin-bottom:16px;
+    }
+    @media (max-width: 820px){
+      .page-title{font-size:36px}
+      .login-brand.logo-only img{
+        width:138px;
+        height:138px;
+      }
+      #loginCard{
+        width:min(100%, calc(100vw - 24px));
+        padding:14px;
+      }
+      #loginEmail,
+      #loginPassword{
+        min-width:220px;
+        flex:1 1 100%;
+      }
+    }
+
+    .footer{text-align:center;color:var(--muted);font-size:13px;margin-top:24px}
+    .empty{text-align:center;color:var(--muted);padding:24px}
+    @media(max-width:850px){
+      .hero-inner{display:none}
+      .hero-actions{justify-content:center}
+      .topbar,.role-card{align-items:stretch}
+      .role-card{width:100%;flex-direction:column}
+      .form-grid,.filters,.stats,.admin-grid{grid-template-columns:1fr}
+      .card-head{flex-direction:column;align-items:flex-start}
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <div class="hero-inner">
+        <span class="sr-only">ASV Mellrichstadt · Digitales Fangbuch</span>
+      </div>
+    </header>
+
+    <div class="page-title">Fangbuch</div>
+
+    <div class="login-brand logo-only" id="loginBrand">
+      <img id="asvLogo" alt="Vereinswappen ASV Mellrichstadt">
+    </div>
+
+    <div class="topbar" id="topbar">
+      <div class="role-card" id="loginCard">
+        <strong>Anmeldung:</strong>
+        <input id="loginEmail" type="email" placeholder="E-Mail" autocomplete="username" onkeydown="handleLoginKey(event)">
+        <select id="memberSelect" style="display:none"></select>
+        <input id="loginPassword" type="password" placeholder="Passwort" autocomplete="current-password" onkeydown="handleLoginKey(event)">
+        <button class="btn-main btn-small" onclick="loginMember()">Anmelden</button>
+        <button class="forgot-link btn-small" type="button" onclick="forgotPassword()">Passwort vergessen</button>
+        <button class="btn-light btn-small" onclick="registerMember()">Erstzugang erstellen</button>
+        <button id="logoutButton" class="btn-light btn-small" onclick="logoutMember()" style="display:none">Abmelden</button>
+      </div>
+      <span id="loginState" class="sr-only">Niemand</span>
+      <select id="roleSelect" onchange="updateRoleView()" style="display:none">
+        <option value="mitglied">Mitglied</option>
+        <option value="vorstand">Vorstand / Gewässerwart</option>
+        <option value="admin" selected>Administrator</option>
+      </select>
+      <div class="role-card" id="passwordChangeCard" style="display:none">
+        <strong>Passwort ändern:</strong>
+        <input id="oldPassword" type="password" placeholder="Aktuelles Passwort">
+        <input id="newPassword" type="password" placeholder="Neues Passwort">
+        <input id="newPasswordConfirm" type="password" placeholder="Neues Passwort wiederholen">
+        <button class="btn-main btn-small" onclick="changeOwnPassword()">Ändern</button>
+      </div>
+    </div>
+
+    <nav class="tabs" id="mainTabs">
+      <button class="tab" data-tab="entry" onclick="showSection('entry')">Fang eintragen</button>
+      <button class="tab" data-tab="my" onclick="showSection('my')">Meine Fänge</button>
+      <button class="tab board" data-tab="overview" onclick="showSection('overview')">Alle Fänge</button>
+      <button class="tab board" data-tab="stats" onclick="showSection('stats')">Auswertung</button>
+      <button class="tab board" data-tab="admin" onclick="showSection('admin')">Verwaltung</button>
+    </nav>
+
+    <main>
+      <section id="section-start" class="section active"></section>
+
+      <section id="section-entry" class="section">
+        <article class="card">
+          <div class="card-head">
+            <h2>Fang eintragen</h2>
+</div>
+          <div class="card-body">
+            <form id="catchForm"><input type="hidden" id="catchEditId">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="datum">Datum *</label>
+                  <input id="datum" type="date" required>
+                </div>
+                <div class="field">
+                  <label for="gewaesser">Gewässer *</label>
+                  <select id="gewaesser" required></select>
+                </div>
+                <div class="field">
+                  <label for="fischart">Fischart *</label>
+                  <select id="fischart" onchange="showFishHint()" required></select>
+                  <div class="hint" id="fishHint"></div>
+                </div>
+                <div class="field">
+                  <label for="anzahl">Anzahl *</label>
+                  <input id="anzahl" type="number" min="1" step="1" value="1" required>
+                </div>
+                <div class="field">
+                  <label for="laenge">Länge in cm</label>
+                  <input id="laenge" type="number" min="0" step="1" placeholder="z. B. 42">
+                </div>
+                <div class="field">
+                  <label for="gewicht">Gewicht in g</label>
+                  <input id="gewicht" type="number" min="0" step="1" placeholder="optional">
+                </div>
+                <div class="field full">
+                  <label>Verbleib *</label>
+                  <div class="segmented">
+                    <input type="radio" id="entnommen" name="verbleib" value="entnommen" checked onchange="toggleTransferField()">
+                    <label for="entnommen">Entnommen</label>
+                    <input type="radio" id="zurueckgesetzt" name="verbleib" value="zurueckgesetzt" onchange="toggleTransferField()">
+                    <label for="zurueckgesetzt">Zurückgesetzt</label>
+                    <input type="radio" id="umgesetzt" name="verbleib" value="umgesetzt" onchange="toggleTransferField()">
+                    <label for="umgesetzt">Umgesetzt</label>
+                  </div>
+                </div>
+                <div class="field full" id="transferTargetField" style="display:none">
+                  <label for="zielgewaesser">Zielgewässer bei Umsetzung *</label>
+                  <select id="zielgewaesser"></select>
+                </div>
+                <div class="field full">
+                  <label for="bemerkung">Bemerkung</label>
+                  <textarea id="bemerkung" placeholder="z. B. Sammelfang, Besonderheiten, Wetter"></textarea>
+                </div>
+              </div>
+              <div class="actions" style="margin-top:16px">
+                <button class="btn-main" id="catchSubmitButton" type="submit">Fang speichern</button>
+                <button class="btn-light" type="button" onclick="resetCatchForm()">Formular leeren</button>
+              </div>
+              <div id="formNotice" class="notice"></div>
+            </form>
+          </div>
+        </article>
+      </section>
+
+      <section id="section-my" class="section">
+        <article class="card">
+          <div class="card-head">
+            <h2>Meine Fänge</h2>
+</div>
+          <div class="card-body"><div id="myCatches"></div></div>
+        </article>
+      </section>
+
+      <section id="section-overview" class="section">
+        <article class="card">
+          <div class="card-head">
+            <h2>Alle Fänge</h2>
+</div>
+          <div class="card-body">
+            <div class="filters">
+              <select id="filterYear" onchange="renderOverview()"></select>
+              <select id="filterWater" onchange="renderOverview()"></select>
+              <select id="filterFish" onchange="renderOverview()"></select>
+              <select id="filterMember" onchange="renderOverview()"></select>
+              <select id="filterStatus" onchange="renderOverview()">
+                <option value="">Alle Fangarten</option>
+                <option value="entnommen">Entnommen</option>
+                <option value="zurueckgesetzt">Zurückgesetzt</option>
+                <option value="umgesetzt">Umgesetzt</option>
+              </select>
+            </div>
+            <div id="allCatches"></div>
+          </div>
+        </article>
+      </section>
+
+      <section id="section-stats" class="section">
+        <article class="card">
+          <div class="card-head">
+            <h2>Auswertung</h2>
+</div>
+          <div class="card-body">
+            <div class="admin-grid" style="margin-top:16px">
+              <div class="panel full">
+                <h3>Gesamtbestand je Fischart</h3>
+                <div id="statsStockTotals"></div>
+              </div>
+              <div class="panel full">
+                <h3>Gefangene Fische je Gewässer</h3>
+                <div id="statsCaughtByWater"></div>
+              </div>
+              <div class="panel full">
+                <h3>Bestand je Gewässer</h3>
+                <div id="statsStock"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="section-admin" class="section">
+        <article class="card">
+          <div class="card-head">
+            <h2>Verwaltung</h2>
+</div>
+          <div class="card-body">
+            <div class="admin-tabs">
+              <button class="admin-tab active" data-admin="members" onclick="showAdminPanel('members')">Mitglieder verwalten</button>
+              <button class="admin-tab" data-admin="waters" onclick="showAdminPanel('waters')">Gewässer verwalten</button>
+              <button class="admin-tab" data-admin="fish" onclick="showAdminPanel('fish')">Fischarten verwalten</button>
+              <button class="admin-tab" data-admin="stock" onclick="showAdminPanel('stock')">Besatz & Bestand</button>
+            </div>
+
+            <div id="adminPanelMembers" class="admin-panel">
+              <div class="admin-grid">
+                <div class="panel">
+                  <h3 id="memberFormTitle">Mitglied hinzufügen</h3>
+                  <input type="hidden" id="memberEditId">
+                  <div class="field"><label>Mitgliedsnummer</label><input id="memberNr" placeholder="z. B. 004"></div><br>
+                  <div class="field"><label>Name</label><input id="memberName" placeholder="z. B. Max Mustermann"></div><br>
+                  <div class="field"><label>Rolle</label>
+                    <select id="memberRole">
+                      <option value="mitglied">Mitglied</option>
+                      <option value="vorstand">Vorstand / Gewässerwart</option>
+                      <option value="admin">Administrator</option>
+                    </select>
+                  </div><br>
+                  <div class="field"><label>Status</label>
+                    <select id="memberStatus">
+                      <option value="aktiv">Aktives Mitglied</option>
+                      <option value="neu">Neues Mitglied</option>
+                      <option value="ehrenmitglied">Ehrenmitglied</option>
+                      <option value="pausierend">Pausierend</option>
+                    </select>
+                  </div><br>
+                  <div class="actions">
+                    <button class="btn-main" onclick="saveMember()">Mitglied speichern</button>
+                    <button class="btn-light" onclick="cancelMemberEdit()">Abbrechen</button>
+                  </div>
+                </div>
+                <div class="panel">
+                  <h3>Vorhandene Mitglieder</h3>
+                  <div class="member-filters">
+                    <input id="memberSearch" placeholder="Mitglied suchen" oninput="renderAdmin()">
+                    <select id="memberStatusFilter" onchange="renderAdmin()"></select>
+                    <select id="memberRoleFilter" onchange="renderAdmin()"></select>
+                  </div>
+                  <div id="membersTable"></div>
+                  <div id="roleAdminTools" class="role-admin-tools" style="display:none">
+                    <input id="newRoleName" placeholder="Neue Rolle, z. B. Jugendwart">
+                    <button class="btn-light" onclick="addCustomRole()">Rolle anlegen</button>
+                    <div class="hint full" id="customRolesList"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="adminPanelWaters" class="admin-panel" style="display:none">
+              <div class="admin-grid">
+                <div class="panel">
+                  <h3 id="waterFormTitle">Gewässer hinzufügen</h3>
+                  <input type="hidden" id="waterEditId">
+                  <div class="field"><label>Name</label><input id="waterName" placeholder="z. B. Teichanlage Sondheim"></div><br>
+                  <div class="field"><label>Typ</label>
+                    <select id="waterType">
+                      <option>Teich</option>
+                      <option>Fließgewässer</option>
+                      <option>See</option>
+                      <option>Gewässer</option>
+                    </select>
+                  </div><br>
+                  <div class="field"><label>Farbe</label><input id="waterColor" class="color-input" type="color" value="#8fcfbd"></div><br>
+                  <div class="actions">
+                    <button class="btn-main" onclick="saveWater()">Gewässer speichern</button>
+                    <button class="btn-light" onclick="cancelWaterEdit()">Abbrechen</button>
+                  </div>
+                </div>
+                <div class="panel">
+                  <h3>Vorhandene Gewässer</h3>
+                  <div id="watersTable"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="adminPanelFish" class="admin-panel" style="display:none">
+              <div class="admin-grid">
+                <div class="panel">
+                  <h3 id="fishFormTitle">Fischart hinzufügen</h3>
+                  <input type="hidden" id="fishEditId">
+                  <div class="field"><label>Name</label><input id="fishName" placeholder="z. B. Schleie"></div><br>
+                  <div class="field"><label>Mindestmaß in cm</label><input id="fishMin" type="number" min="0" step="1" placeholder="leer lassen, falls offen"></div><br>
+                  <div class="field"><label>Farbe</label><input id="fishColor" class="color-input" type="color" value="#8fcfbd"></div><br>
+                  <div class="actions">
+                    <button class="btn-main" onclick="saveFish()">Fischart speichern</button>
+                    <button class="btn-light" onclick="cancelFishEdit()">Abbrechen</button>
+                  </div>
+                </div>
+                <div class="panel">
+                  <h3>Vorhandene Fischarten</h3>
+                  <div id="fishTable"></div>
+                </div>
+              </div>
+            </div>
+
+
+            <div id="adminPanelStock" class="admin-panel" style="display:none">
+              <div class="admin-grid">
+                <div class="panel">
+                  <h3>Besatz eintragen</h3>
+                  <div class="field"><label>Datum</label><input id="stockDate" type="date"></div><br>
+                  <div class="field"><label>Gewässer</label><select id="stockWater"></select></div><br>
+                  <div class="field"><label>Fischart</label><select id="stockFish"></select></div><br>
+                  <div class="field"><label>Anzahl</label><input id="stockCount" type="number" min="1" step="1" value="1"></div><br>
+                  <div class="field"><label>Art</label><select id="stockType"><option value="besatz">Besatz / Zukauf</option><option value="korrektur_plus">Korrektur plus</option><option value="korrektur_minus">Korrektur minus</option></select></div><br>
+                  <div class="field"><label>Bemerkung</label><textarea id="stockNote" placeholder="z. B. Besatz Frühjahr 2026"></textarea></div>
+                  <div class="actions" style="margin-top:12px"><button class="btn-main" onclick="saveStockMovement()">Bestand buchen</button></div>
+                </div>
+                <div class="panel">
+                  <h3>Bestand je Gewässer</h3>
+                  <div id="currentStockTable"></div>
+                </div>
+              </div>
+              <div class="panel" style="margin-top:16px">
+                <h3>Bestandsbewegungen</h3>
+                <div id="stockTable"></div>
+              </div>
+            </div>
+
+            <div id="adminNotice" class="notice"></div>
+          </div>
+        </article>
+      </section>
+    </main>
+    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.0</div>
+  </div>
+
+<script>
+
+// ASV Medien aus Supabase Storage
+// Die Dateien sollten im Bucket "asv-assets" liegen.
+// Empfohlene Dateinamen:
+// logo-asv.png
+// hintergrund-fangbuch.jpg
+const ASV_ASSETS = {
+  logoUrl: "https://oapiahtownftseovczvn.supabase.co/storage/v1/object/public/asv-assets/logo-asv.png",
+  backgroundUrl: "https://oapiahtownftseovczvn.supabase.co/storage/v1/object/public/asv-assets/hintergrund-fangbuch.jpg"
+};
+
+const SUPABASE_URL = "https://oapiahtownftseovczvn.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hcGlhaHRvd25mdHNlb3ZjenZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzA2ODIsImV4cCI6MjA5MjcwNjY4Mn0.GTgKa4HyoFrmzw8Xbdf-qxxJZKrZu-AK3BsU6r8iYJs";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let appState = null;
+let currentAuthUser = null;
+
+const keys = {
+  members:"asv_v04_members",
+  waters:"asv_v03_waters",
+  fish:"asv_v03_fish",
+  catches:"asv_v03_catches",
+  stock:"asv_v01_stock_movements",
+  roles:"asv_v01_roles"
+};
+
+const defaults = {
+  members:[
+    {
+        "id": 1,
+        "nr": "001",
+        "name": "Horst Meissner",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 2,
+        "nr": "002",
+        "name": "Wilhelm Buchert",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 3,
+        "nr": "003",
+        "name": "Erich Geis",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 4,
+        "nr": "004",
+        "name": "Lothar Ulbrich",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 5,
+        "nr": "005",
+        "name": "Joachim Angermüller",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 6,
+        "nr": "006",
+        "name": "Wilfried Kahle",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 7,
+        "nr": "007",
+        "name": "Dieter Lorenz",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 8,
+        "nr": "008",
+        "name": "Nikolaus Trapp",
+        "role": "vorstand",
+        "status": "aktiv"
+    },
+    {
+        "id": 9,
+        "nr": "009",
+        "name": "Woldemar Erbis",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 10,
+        "nr": "010",
+        "name": "Johann Justus",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 11,
+        "nr": "011",
+        "name": "Wolfgang Stahl",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 12,
+        "nr": "012",
+        "name": "Andreas Gruschenko",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 13,
+        "nr": "013",
+        "name": "Thomas Schulz",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 14,
+        "nr": "014",
+        "name": "Andrej Schreiner",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 15,
+        "nr": "015",
+        "name": "Marco Lorenz",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 16,
+        "nr": "016",
+        "name": "Stan Erbis",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 17,
+        "nr": "017",
+        "name": "Sergej Kloos",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 18,
+        "nr": "018",
+        "name": "Andreas Kaiser",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 19,
+        "nr": "019",
+        "name": "Alexander Sopp",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 20,
+        "nr": "020",
+        "name": "Jan Angermüller",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 21,
+        "nr": "021",
+        "name": "Oliver Glaser",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 22,
+        "nr": "022",
+        "name": "Benjamin Trapp",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 23,
+        "nr": "023",
+        "name": "Andre Moritz",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 24,
+        "nr": "024",
+        "name": "Hannes Bäuml",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 25,
+        "nr": "025",
+        "name": "Richard Gotwich",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 26,
+        "nr": "026",
+        "name": "Micha Bäuml",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 27,
+        "nr": "027",
+        "name": "Sebastian Freund",
+        "role": "mitglied",
+        "status": "aktiv"
+    },
+    {
+        "id": 28,
+        "nr": "034",
+        "name": "Sebastian Thieme",
+        "role": "admin",
+        "status": "neu"
+    },
+    {
+        "id": 29,
+        "nr": "035",
+        "name": "Daniel Puschner",
+        "role": "mitglied",
+        "status": "neu"
+    },
+    {
+        "id": 30,
+        "nr": "030",
+        "name": "Jürgen Blümm",
+        "role": "mitglied",
+        "status": "pausierend"
+    },
+    {
+        "id": 31,
+        "nr": "031",
+        "name": "Rosemarie Eckert",
+        "role": "mitglied",
+        "status": "pausierend"
+    },
+    {
+        "id": 32,
+        "nr": "032",
+        "name": "Reinhard Krümpel",
+        "role": "mitglied",
+        "status": "pausierend"
+    },
+    {
+        "id": 33,
+        "nr": "033",
+        "name": "Eberhard Streit",
+        "role": "mitglied",
+        "status": "ehrenmitglied"
+    }
+],
+  waters:[
+    {id:1,name:"Teichanlage Sondheim",type:"Teich"},
+    {id:2,name:"Streu",type:"Fließgewässer"},
+    {id:3,name:"Vereinsgewässer Mellrichstadt",type:"Gewässer"}
+  ],
+  fish:[
+    {id:1,name:"Karpfen",min:35},
+    {id:2,name:"Hecht",min:60},
+    {id:3,name:"Zander",min:50},
+    {id:4,name:"Forelle",min:28},
+    {id:5,name:"Rotauge",min:null},
+    {id:6,name:"Barsch",min:null}
+  ],
+  catches:[
+    {id:1001,date:"2026-04-15",memberId:2,waterId:1,fishId:1,length:42,weight:1250,count:1,status:"entnommen",note:"Schuppenkarpfen",createdAt:new Date().toISOString()},
+    {id:1002,date:"2026-04-18",memberId:3,waterId:2,fishId:4,length:31,weight:"",count:1,status:"zurueckgesetzt",note:"sauber zurückgesetzt",createdAt:new Date().toISOString()},
+    {id:1003,date:"2026-04-22",memberId:2,waterId:1,fishId:5,length:"",weight:"",count:8,status:"zurueckgesetzt",note:"Sammelfang",createdAt:new Date().toISOString()}
+  ],
+  stock:[],
+  roles:[
+    {id:"mitglied", label:"Mitglied", system:true},
+    {id:"vorstand", label:"Vorstand / Gewässerwart", system:true},
+    {id:"admin", label:"Administrator", system:true}
+  ]
+};
+
+function clone(v){ return JSON.parse(JSON.stringify(v)); }
+function localLoad(key, fallback){
+  const raw = localStorage.getItem(key);
+  if(!raw){ localStorage.setItem(key, JSON.stringify(fallback)); return clone(fallback); }
+  try { return JSON.parse(raw); } catch { return clone(fallback); }
+}
+function localSave(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+function ensureState(){
+  if(!appState){
+    appState = {
+      members:localLoad(keys.members, defaults.members),
+      waters:localLoad(keys.waters, defaults.waters),
+      fish:localLoad(keys.fish, defaults.fish),
+      catches:localLoad(keys.catches, defaults.catches),
+      stock:localLoad(keys.stock, defaults.stock),
+      roles:localLoad(keys.roles, defaults.roles)
+    };
+  }
+  return appState;
+}
+function members(){ return ensureState().members; }
+function waters(){ return ensureState().waters; }
+function sortByName(list){ return [...list].sort((a,b)=>(a.name || "").localeCompare(b.name || "", "de", {sensitivity:"base"})); }
+function fishTypes(){ return sortByName(ensureState().fish); }
+function catches(){ return ensureState().catches; }
+function stockMovements(){ return ensureState().stock; }
+function roles(){ return ensureState().roles; }
+function setStatePart(name, value){ ensureState()[name] = value; }
+function saveMembers(v){ setStatePart("members", v); localSave(keys.members, v); }
+function saveWaters(v){ setStatePart("waters", v); localSave(keys.waters, v); }
+function saveFishTypes(v){ setStatePart("fish", v); localSave(keys.fish, v); }
+function saveCatches(v){ setStatePart("catches", v); localSave(keys.catches, v); }
+function saveStockMovements(v){ setStatePart("stock", v); localSave(keys.stock, v); }
+function saveRoles(v){ setStatePart("roles", v); localSave(keys.roles, v); }
+function sameId(a,b){ return String(a ?? "") === String(b ?? ""); }
+function jsId(id){ return "\'" + String(id).replace(/\\/g,"\\\\").replace(/\'/g,"\\\'") + "\'"; }
+function byId(list,id){ return list.find(x => sameId(x.id, id)); }
+function nextId(list){ 
+  const nums = list.map(x => Number(x.id)).filter(Number.isFinite);
+  return nums.length ? Math.max(...nums) + 1 : Date.now();
+}
+function supabaseConfigured(){ return !SUPABASE_URL.includes("DEIN-PROJEKT") && !SUPABASE_ANON_KEY.includes("DEIN-ANON-KEY"); }
+function dbError(error){ if(error) throw new Error(error.message || String(error)); }
+function normalizeMember(row){
+  return {
+    ...row,
+    nr: row.member_no ?? row.nr ?? "",
+    member_no: row.member_no ?? row.nr ?? "",
+    mustChangePassword: row.must_change_password ?? row.mustChangePassword ?? false
+  };
+}
+function normalizeFish(row){
+  return {
+    ...row,
+    min: row.min_size_cm ?? row.min ?? null,
+    min_size_cm: row.min_size_cm ?? row.min ?? null
+  };
+}
+function normalizeCatch(row){
+  return {
+    id:row.id,
+    date:row.catch_date ?? row.date,
+    memberId:row.member_id,
+    waterId:row.water_id,
+    fishId:row.fish_type_id ?? row.fish_id,
+    length:row.length_cm ?? "",
+    weight:row.weight_g ?? "",
+    count:row.count ?? 1,
+    status:row.status,
+    targetWaterId:row.target_water_id ?? null,
+    note:row.note ?? "",
+    createdAt:row.created_at
+  };
+}
+function normalizeStock(row){
+  return {
+    id:row.id,
+    date:row.movement_date ?? row.date,
+    waterId:row.water_id,
+    fishId:row.fish_type_id ?? row.fish_id,
+    count:row.count,
+    type:row.type,
+    note:row.note,
+    createdAt:row.created_at
+  };
+}
+function catchPayload(data){
+  return {
+    catch_date:data.date,
+    member_id:data.memberId,
+    water_id:data.waterId,
+    fish_type_id:data.fishId,
+    length_cm:data.length === "" ? null : Number(data.length),
+    weight_g:data.weight === "" ? null : Number(data.weight),
+    count:data.count,
+    status:data.status,
+    target_water_id:data.targetWaterId || null,
+    note:data.note || null
+  };
+}
+async function loadCloudData(){
+  if(!supabaseConfigured()){
+    notice("formNotice", "warn", "Supabase URL und Anon Key sind noch Platzhalter. Die App nutzt vorerst lokale Testdaten.");
+    ensureState();
+    return;
+  }
+  const [m,w,f,c,st] = await Promise.all([
+    supabaseClient.from("members").select("id,member_no,name,role,status,auth_user_id,must_change_password,email").order("name", {ascending:true}),
+    supabaseClient.from("waters").select("id,name,type,color").order("name", {ascending:true}),
+    supabaseClient.from("fish_types").select("id,name,min_size_cm,color").order("name", {ascending:true}),
+    supabaseClient.from("catches").select("id,catch_date,member_id,water_id,fish_type_id,length_cm,weight_g,count,status,target_water_id,note,created_at").order("catch_date", {ascending:false}),
+    supabaseClient.from("stock_movements").select("id,movement_date,water_id,fish_type_id,count,type,note,created_at").order("movement_date", {ascending:false})
+  ]);
+  [m,w,f,c,st].forEach(res => dbError(res.error));
+  appState = {
+    members:m.data?.length ? m.data.map(normalizeMember) : clone(defaults.members),
+    waters:w.data?.length ? w.data : clone(defaults.waters),
+    fish:f.data?.length ? f.data.map(normalizeFish) : clone(defaults.fish),
+    catches:(c.data || []).map(normalizeCatch),
+    stock:(st.data || []).map(normalizeStock),
+    roles:clone(defaults.roles)
+  };
+}
+async function saveCatchCloud(data, editId=""){
+  if(!supabaseConfigured()){ return data; }
+  const payload = catchPayload(data);
+  if(editId){
+    const {data:row,error} = await supabaseClient.from("catches").update(payload).eq("id", editId).select().single();
+    dbError(error);
+    return normalizeCatch(row);
+  }
+  const {data:row,error} = await supabaseClient.from("catches").insert(payload).select().single();
+  dbError(error);
+  return normalizeCatch(row);
+}
+async function deleteCatchCloud(id){
+  if(!supabaseConfigured()) return;
+  const {error} = await supabaseClient.from("catches").delete().eq("id", id);
+  dbError(error);
+}
+async function saveSimpleRow(table, payload, id=""){
+  if(!supabaseConfigured()) return {...payload, id:id || Date.now()};
+  const query = id ? supabaseClient.from(table).update(payload).eq("id", id) : supabaseClient.from(table).insert(payload);
+  const {data,error} = await query.select().single();
+  dbError(error);
+  return data;
+}
+async function deleteSimpleRow(table, id){
+  if(!supabaseConfigured()) return;
+  const {error} = await supabaseClient.from(table).delete().eq("id", id);
+  dbError(error);
+}
+function role(){ return document.getElementById("roleSelect").value; }
+function currentMemberId(){
+  const member = loggedInMember();
+  if(member) return member.id;
+  const selectValue = document.getElementById("memberSelect")?.value;
+  return selectValue || "";
+}
+function updateMemberOptions(query=""){
+  const box = document.getElementById("memberOptions");
+  if(!box) return;
+  const q = query.trim().toLowerCase();
+  const list = members()
+    .filter(m => !q || (m.name || "").toLowerCase().startsWith(q))
+    .sort((a,b)=>(a.name || "").localeCompare(b.name || "", "de"));
+  box.innerHTML = list.map(m => `<option value="${m.name}"></option>`).join("");
+}
+function syncMemberSearch(){
+  const input = document.getElementById("loginMemberSearch");
+  const select = document.getElementById("memberSelect");
+  if(!input || !select) return;
+  const query = input.value.trim().toLowerCase();
+  updateMemberOptions(query);
+  const exact = members().find(m => (m.name || "").toLowerCase() === query || `${m.nr} ${m.name}`.toLowerCase() === query);
+  const starts = members().filter(m => (m.name || "").toLowerCase().startsWith(query));
+  const match = exact || (query && starts.length === 1 ? starts[0] : null);
+  select.value = match ? String(match.id) : "";
+}
+
+
+function applyBrandAssets(){
+  const logo = document.getElementById("asvLogo");
+  if(logo) logo.src = ASV_ASSETS.logoUrl;
+  document.body.style.backgroundImage = `linear-gradient(rgba(220,239,232,.78), rgba(220,239,232,.78)), url("${ASV_ASSETS.backgroundUrl}")`;
+  document.body.style.backgroundSize = "cover";
+  document.body.style.backgroundPosition = "center";
+  document.body.style.backgroundAttachment = "fixed";
+}
+async function forgotPassword(){
+  const emailInput = document.getElementById("loginEmail");
+  const email = (emailInput?.value || "").trim();
+  if(!email){
+    alert("Bitte zuerst deine E Mail Adresse eintragen.");
+    return;
+  }
+  const redirectTo = window.location.href.split("#")[0].split("?")[0];
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+  if(error){
+    alert("Passwort Zurücksetzung fehlgeschlagen: " + error.message);
+    return;
+  }
+  alert("Wenn diese E Mail Adresse registriert ist, wurde eine Mail zum Zurücksetzen des Passworts versendet.");
+}
+
+
+async function handlePasswordRecoveryRedirect(){
+  const hash = window.location.hash || "";
+  const query = window.location.search || "";
+  const isRecovery = hash.includes("type=recovery") || query.includes("type=recovery");
+  if(!isRecovery) return;
+  const newPassword = prompt("Bitte neues Passwort eingeben. Mindestens 8 Zeichen.");
+  if(!newPassword) return;
+  if(newPassword.length < 8){
+    alert("Das Passwort muss mindestens 8 Zeichen haben.");
+    return;
+  }
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if(error){
+    alert("Passwort konnte nicht geändert werden: " + error.message);
+    return;
+  }
+  alert("Passwort wurde geändert. Du kannst dich jetzt anmelden.");
+  window.location.hash = "";
+}
+
+async function init(){
+  applyBrandAssets();
+  await handlePasswordRecoveryRedirect();
+  try{
+    if(supabaseConfigured()){
+      const {data} = await supabaseClient.auth.getUser();
+      currentAuthUser = data?.user || null;
+      await loadCloudData();
+      if(currentAuthUser){
+        const profile = members().find(m => m.auth_user_id === currentAuthUser.id);
+        if(profile) sessionStorage.setItem("asv_current_member_id", String(profile.id));
+      }
+    } else {
+      ensureState();
+      seedDemoStockData();
+    }
+  }catch(err){
+    console.error(err);
+    ensureState();
+    alert("Supabase konnte nicht geladen werden: " + err.message);
+  }
+  resetCatchForm();
+  if(document.getElementById("stockDate")) document.getElementById("stockDate").valueAsDate = new Date();
+  renderAll();
+  applySessionView();
+}
+
+function fillSelects(){
+  const mem = members(), wat = waters(), fish = fishTypes();
+  const current = loggedInMember();
+  const oldMember = current?.id || document.getElementById("memberSelect").value;
+  const sortedMembers = [...mem].sort((a,b)=>(a.name || "").localeCompare(b.name || "", "de"));
+  document.getElementById("memberSelect").innerHTML = sortedMembers.map(m => `<option value="${m.id}">${m.name}</option>`).join("");
+  updateMemberOptions("");
+  if(oldMember && mem.some(m => String(m.id) === String(oldMember))){
+    document.getElementById("memberSelect").value = oldMember;
+  } else if(sortedMembers.length){
+    document.getElementById("memberSelect").value = sortedMembers[0].id;
+  }
+
+  const oldWater = document.getElementById("gewaesser").value;
+  const waterOptions = wat.map(w => `<option value="${w.id}">${w.name}</option>`).join("");
+  document.getElementById("gewaesser").innerHTML = waterOptions;
+  document.getElementById("zielgewaesser").innerHTML = waterOptions;
+  document.getElementById("stockWater").innerHTML = waterOptions;
+  if(oldWater && wat.some(w => String(w.id) === String(oldWater))) document.getElementById("gewaesser").value = oldWater;
+
+  const oldFish = document.getElementById("fischart").value;
+  const fishOptions = fish.map(f => `<option value="${f.id}">${f.name}</option>`).join("");
+  document.getElementById("fischart").innerHTML = fishOptions;
+  document.getElementById("stockFish").innerHTML = fishOptions;
+  if(oldFish && fish.some(f => String(f.id) === String(oldFish))) document.getElementById("fischart").value = oldFish;
+
+  document.getElementById("memberRole").innerHTML = roleOptions(document.getElementById("memberRole").value || "mitglied");
+  document.getElementById("roleSelect").innerHTML = roleOptions(document.getElementById("roleSelect").value || "mitglied");
+  renderMemberFilterOptions();
+  showFishHint();
+  toggleTransferField();
+}
+
+function showSection(name){
+  const sessionMember = loggedInMember();
+  if(!sessionMember && name !== "start"){
+    alert("Bitte zuerst anmelden.");
+    return;
+  }
+  if(sessionMember?.mustChangePassword && name !== "start"){
+    alert("Bitte ändere zuerst dein Startpasswort.");
+    return;
+  }
+  if((name === "overview" || name === "stats") && !hasBoardAccess()){
+    alert("Diese Ansicht ist später nur für Vorstand oder Gewässerwart gedacht.");
+    return;
+  }
+  if(name === "admin" && !hasBoardAccess()){
+    alert("Diese Ansicht ist später nur für Vorstand, Gewässerwart oder Administratoren gedacht.");
+    return;
+  }
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById("section-" + name).classList.add("active");
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  const tab = document.querySelector(`[data-tab="${name}"]`);
+  if(tab) tab.classList.add("active");
+  renderAll();
+}
+
+function updateRoleView(){
+  const r = role();
+  const member = loggedInMember();
+  const isReady = Boolean(member && !member.mustChangePassword);
+  const tabs = document.getElementById("mainTabs");
+  if(tabs) tabs.style.display = isReady ? "flex" : "none";
+  document.querySelectorAll(".tabs .tab:not(.board):not(.admin)").forEach(el => el.style.display = isReady ? "inline-flex" : "none");
+  document.querySelectorAll(".board").forEach(el => el.style.display = isReady && hasBoardAccess() ? "inline-flex" : "none");
+  document.querySelectorAll(".admin").forEach(el => el.style.display = isReady && r === "admin" ? "inline-flex" : "none");
+  const current = document.querySelector(".section.active")?.id?.replace("section-","");
+  if(member?.mustChangePassword && current !== "start") showSection("start");
+  if((current === "overview" || current === "stats") && !hasBoardAccess()) showSection("start");
+  if(current === "admin" && !hasBoardAccess()) showSection("start");
+  renderAll();
+}
+
+function resetCatchForm(){
+  const form = document.getElementById("catchForm");
+  if(form) form.reset();
+  document.getElementById("catchEditId").value = "";
+  document.getElementById("catchSubmitButton").textContent = "Fang speichern";
+  document.getElementById("datum").valueAsDate = new Date();
+  document.getElementById("anzahl").value = 1;
+  clearNotice("formNotice");
+  showFishHint();
+  toggleTransferField();
+}
+function toggleTransferField(){
+  const selected = document.querySelector("input[name='verbleib']:checked")?.value;
+  const field = document.getElementById("transferTargetField");
+  if(field) field.style.display = selected === "umgesetzt" ? "grid" : "none";
+}
+function showFishHint(){
+  const f = byId(fishTypes(), document.getElementById("fischart").value);
+  document.getElementById("fishHint").textContent = f ? (f.min ? `Hinterlegtes Mindestmaß: ${f.min} cm.` : "Für diese Fischart ist noch kein Mindestmaß hinterlegt.") : "";
+}
+function notice(id, type, text){
+  const el = document.getElementById(id);
+  el.className = "notice show " + type;
+  el.textContent = text;
+}
+function clearNotice(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.className = "notice";
+  el.textContent = "";
+}
+
+document.getElementById("catchForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const editId = document.getElementById("catchEditId").value;
+  const existing = editId ? byId(catches(), editId) : null;
+  const data = {
+    id: existing?.id || Date.now(),
+    date:document.getElementById("datum").value,
+    memberId: existing?.memberId || currentMemberId(),
+    waterId:document.getElementById("gewaesser").value,
+    fishId:document.getElementById("fischart").value,
+    length:document.getElementById("laenge").value,
+    weight:document.getElementById("gewicht").value,
+    count:Number(document.getElementById("anzahl").value),
+    status:document.querySelector("input[name='verbleib']:checked").value,
+    targetWaterId:document.querySelector("input[name='verbleib']:checked").value === "umgesetzt" ? document.getElementById("zielgewaesser").value : null,
+    note:document.getElementById("bemerkung").value.trim(),
+    createdAt:existing?.createdAt || new Date().toISOString()
+  };
+  if(editId && !canEditCatch(existing)){ notice("formNotice","error","Dieser Fang kann nicht mehr durch dieses Mitglied bearbeitet werden."); return; }
+  const errors = [], warnings = [];
+  if(!data.date) errors.push("Bitte ein Datum eintragen.");
+  if(!data.count || data.count < 1) errors.push("Die Anzahl muss mindestens 1 sein.");
+  if(data.status === "umgesetzt" && sameId(data.targetWaterId, data.waterId)) errors.push("Bei einer Umsetzung muss ein anderes Zielgewässer gewählt werden.");
+  const d = new Date(data.date); d.setHours(0,0,0,0);
+  const today = new Date(); today.setHours(0,0,0,0);
+  if(d > today) warnings.push("Das Fangdatum liegt in der Zukunft.");
+  const f = byId(fishTypes(), data.fishId);
+  if(f?.min && data.length && Number(data.length) < f.min) warnings.push(`Die Länge liegt unter dem Mindestmaß von ${f.min} cm.`);
+  if(data.status === "entnommen" && f?.min && Number(data.count || 1) > 3) warnings.push("Die Fangbegrenzung von 3 entnommenen Fischen mit Mindestmaß wird überschritten.");
+  if(errors.length){ notice("formNotice","error",errors.join(" ")); return; }
+  try{
+    const saved = await saveCatchCloud(data, editId);
+    let list = catches();
+    if(editId){
+      list = list.map(c => sameId(c.id, editId) ? saved : c);
+    } else {
+      list.unshift(saved);
+    }
+    saveCatches(list);
+    renderAll();
+    resetCatchForm();
+    if(editId){
+      showSection("my");
+    } else {
+      notice("formNotice", warnings.length ? "warn" : "ok", warnings.length ? "Fang gespeichert. Hinweis: " + warnings.join(" ") : "Fang wurde gespeichert.");
+    }
+  }catch(err){
+    notice("formNotice", "error", "Speichern fehlgeschlagen: " + err.message);
+  }
+});
+
+function formatDate(v){ return v ? new Date(v + "T00:00:00").toLocaleDateString("de-DE") : ""; }
+function catchRuleIssues(c){
+  const issues = [];
+  const f = byId(fishTypes(), c.fishId);
+  if(c.status === "entnommen" && f?.min && c.length && Number(c.length) < Number(f.min)) issues.push(`Unter Mindestmaß (${f.min} cm)`);
+  if(c.status === "entnommen" && f?.min && dailyProtectedTake(c.memberId, c.date) > 3) issues.push("Fangbegrenzung überschritten (max. 3 Fische mit Mindestmaß pro Tag)");
+  return issues;
+}
+function dailyProtectedTake(memberId, date){
+  return catches().filter(x => sameId(x.memberId, memberId) && x.date === date && x.status === "entnommen" && byId(fishTypes(), x.fishId)?.min).reduce((sum,x)=>sum+Number(x.count||1),0);
+}
+function canEditCatch(c){
+  if(!c) return false;
+  if(hasBoardAccess()) return true;
+  if(!sameId(c.memberId, currentMemberId())) return false;
+  const created = c.createdAt ? new Date(c.createdAt) : new Date(c.date + "T00:00:00");
+  return (Date.now() - created.getTime()) <= 7 * 24 * 60 * 60 * 1000;
+}
+function canDeleteCatch(c){
+  if(!c) return false;
+  if(hasBoardAccess()) return true;
+  if(!sameId(c.memberId, currentMemberId())) return false;
+  const created = c.createdAt ? new Date(c.createdAt) : new Date(c.date + "T00:00:00");
+  return (Date.now() - created.getTime()) <= 24 * 60 * 60 * 1000;
+}
+function catchActionHtml(c){
+  const editButton = canEditCatch(c) ? `<button class="btn-light btn-small" onclick="editCatch(${jsId(c.id)})">Bearbeiten</button>` : "";
+  const deleteButton = canDeleteCatch(c)
+    ? `<button class="btn-danger btn-small" onclick="deleteCatch(${jsId(c.id)})">Löschen</button>`
+    : (sameId(c.memberId, currentMemberId()) ? `<button class="btn-danger btn-small" disabled title="Mitglieder können eigene Einträge nur binnen 24 Stunden löschen.">Löschen</button>` : "");
+  const buttons = [editButton, deleteButton].filter(Boolean).join("");
+  return buttons ? `<div class="actions catch-actions">${buttons}</div>` : "–";
+}
+function row(c){
+  const m = byId(members(), c.memberId), w = byId(waters(), c.waterId), f = byId(fishTypes(), c.fishId);
+  const target = c.targetWaterId ? byId(waters(), c.targetWaterId) : null;
+  const badge = c.status === "entnommen" ? "keep" : (c.status === "umgesetzt" ? "keep" : "release");
+  const statusText = c.status === "entnommen" ? "Entnommen" : (c.status === "umgesetzt" ? `Umgesetzt nach ${target?.name || "?"}` : "Zurückgesetzt");
+  const issues = catchRuleIssues(c);
+  const showIssues = role() !== "mitglied";
+  const action = catchActionHtml(c);
+  return `<tr class="${showIssues && issues.length ? "rule-bad" : ""}">
+    <td>${formatDate(c.date)}</td><td class="nowrap">${m?.nr || ""} · ${m?.name || ""}</td><td>${w?.name || ""}</td><td>${f?.name || ""}</td>
+    <td>${c.length ? c.length + " cm" : "–"}</td><td>${c.weight ? c.weight + " g" : "–"}</td><td>${c.count || 1}</td>
+    <td><span class="badge ${badge}">${statusText}</span></td><td>${c.note || "–"}</td><td>${showIssues && issues.length ? `<span class="rule-note">${issues.join("; ")}</span>` : "–"}</td><td>${action}</td>
+  </tr>`;
+}
+function editCatch(id){
+  const c = byId(catches(), id);
+  if(!canEditCatch(c)){ alert("Dieser Fang kann nicht mehr bearbeitet werden."); return; }
+  document.getElementById("catchEditId").value = c.id;
+  document.getElementById("datum").value = c.date || "";
+  document.getElementById("gewaesser").value = c.waterId;
+  document.getElementById("fischart").value = c.fishId;
+  document.getElementById("anzahl").value = c.count || 1;
+  document.getElementById("laenge").value = c.length || "";
+  document.getElementById("gewicht").value = c.weight || "";
+  document.querySelector(`input[name='verbleib'][value='${c.status || "entnommen"}']`).checked = true;
+  document.getElementById("zielgewaesser").value = c.targetWaterId || "";
+  document.getElementById("bemerkung").value = c.note || "";
+  document.getElementById("catchSubmitButton").textContent = "Fang aktualisieren";
+  showFishHint();
+  toggleTransferField();
+  showSection("entry");
+  document.getElementById("catchForm").scrollIntoView({behavior:"smooth", block:"start"});
+}
+async function deleteCatch(id){
+  const c = byId(catches(), id);
+  if(!canDeleteCatch(c)){ alert("Dieser Fang kann nicht mehr gelöscht werden."); return; }
+  if(!confirm("Fang wirklich löschen?")) return;
+  try{
+    await deleteCatchCloud(id);
+    saveCatches(catches().filter(item => !sameId(item.id, id)));
+    if(sameId(document.getElementById("catchEditId").value, id)) resetCatchForm();
+    renderAll();
+  }catch(err){
+    alert("Löschen fehlgeschlagen: " + err.message);
+  }
+}
+function renderTable(id, list){
+  const el = document.getElementById(id);
+  if(!list.length){ el.innerHTML = `<div class="empty">Noch keine passenden Fänge vorhanden.</div>`; return; }
+  el.innerHTML = `<div class="table-wrap wide-table catch-table"><table><thead><tr><th>Datum</th><th>Mitglied</th><th>Gewässer</th><th>Fischart</th><th>Länge</th><th>Gewicht</th><th>Anzahl</th><th>Fangart</th><th>Bemerkung</th><th>Regelprüfung</th><th>Aktion</th></tr></thead><tbody>${list.map(row).join("")}</tbody></table></div>`;
+}
+function renderMyCatches(){
+  renderTable("myCatches", catches().filter(c => sameId(c.memberId, currentMemberId())).sort((a,b) => new Date(b.date) - new Date(a.date)));
+}
+function renderFilterOptions(){
+  const list = catches();
+  const years = [...new Set(list.map(c => new Date(c.date).getFullYear()))].sort((a,b)=>b-a);
+  const current = new Date().getFullYear();
+  if(!years.includes(current)) years.unshift(current);
+  keepSelect("filterYear", `<option value="">Alle Jahre</option>` + years.map(y => `<option value="${y}">${y}</option>`).join(""));
+  keepSelect("filterWater", `<option value="">Alle Gewässer</option>` + waters().map(w => `<option value="${w.id}">${w.name}</option>`).join(""));
+  keepSelect("filterFish", `<option value="">Alle Fischarten</option>` + fishTypes().map(f => `<option value="${f.id}">${f.name}</option>`).join(""));
+  keepSelect("filterMember", `<option value="">Alle Mitglieder</option>` + members().map(m => `<option value="${m.id}">${m.nr} · ${m.name}</option>`).join(""));
+}
+function keepSelect(id, html){
+  const el = document.getElementById(id);
+  const old = el.value;
+  el.innerHTML = html;
+  if([...el.options].some(o => o.value === old)) el.value = old;
+}
+function filteredCatches(){
+  let list = catches();
+  const y = document.getElementById("filterYear").value, w = document.getElementById("filterWater").value, f = document.getElementById("filterFish").value, m = document.getElementById("filterMember").value, s = document.getElementById("filterStatus").value;
+  if(y) list = list.filter(c => new Date(c.date).getFullYear() === Number(y));
+  if(w) list = list.filter(c => sameId(c.waterId, w));
+  if(f) list = list.filter(c => sameId(c.fishId, f));
+  if(m) list = list.filter(c => sameId(c.memberId, m));
+  if(s) list = list.filter(c => c.status === s);
+  return list.sort((a,b)=>new Date(b.date)-new Date(a.date));
+}
+function renderOverview(){ renderFilterOptions(); renderTable("allCatches", filteredCatches()); }
+function statHtml(list){
+  const total = list.reduce((s,c)=>s+Number(c.count||1),0);
+  const ent = list.filter(c=>c.status==="entnommen").reduce((s,c)=>s+Number(c.count||1),0);
+  const rel = list.filter(c=>c.status==="zurueckgesetzt").reduce((s,c)=>s+Number(c.count||1),0);
+  return `<div class="stat"><strong>${total}</strong><span>Fische gesamt</span></div><div class="stat"><strong>${ent}</strong><span>Entnommen</span></div><div class="stat"><strong>${rel}</strong><span>Zurückgesetzt</span></div><div class="stat"><strong>${new Set(list.map(c=>c.fishId)).size}</strong><span>Fischarten</span></div><div class="stat"><strong>${new Set(list.map(c=>c.waterId)).size}</strong><span>Gewässer</span></div>`;
+}
+function aggregate(list, source, key){
+  const map = new Map();
+  list.forEach(c => map.set(c[key], (map.get(c[key]) || 0) + Number(c.count || 1)));
+  const rows = [...map.entries()].map(([id,n]) => [byId(source,id)?.name || id, n]).sort((a,b)=>b[1]-a[1]);
+  return rows.length ? "<p class='hint'>Gezählt werden hier eingetragene Fangmeldungen, nicht der verbleibende Bestand.</p><ul>" + rows.map(r => `<li>${r[0]}: <strong>${r[1]}</strong></li>`).join("") + "</ul>" : "<p class='hint'>Keine Daten vorhanden.</p>";
+}
+
+
+function paletteColor(index){
+  const colors = ["#8fcfbd","#f1c27d","#9fbce3","#c6d98f","#d7a6c8","#9fd6df","#e4b19a","#b8c7a1"];
+  return colors[index % colors.length];
+}
+function waterColor(waterId){
+  const list = waters();
+  const water = byId(list, waterId);
+  if(water?.color) return water.color;
+  const index = Math.max(0, list.findIndex(w => sameId(w.id, waterId)));
+  return paletteColor(index);
+}
+function fishColor(fishId){
+  const list = fishTypes();
+  const fish = byId(list, fishId);
+  if(fish?.color) return fish.color;
+  const index = Math.max(0, list.findIndex(f => sameId(f.id, fishId)));
+  return paletteColor(index);
+}
+
+function caughtBalanceRows(list){
+  const map = new Map();
+  list.forEach(c => {
+    if(c.status === "zurueckgesetzt") return;
+    const key = stockKey(c.waterId, c.fishId);
+    map.set(key, (map.get(key) || 0) + Number(c.count || 1));
+    if(c.status === "umgesetzt" && c.targetWaterId){
+      const targetKey = stockKey(c.targetWaterId, c.fishId);
+      map.set(targetKey, (map.get(targetKey) || 0) + Number(c.count || 1));
+    }
+  });
+  return [...map.entries()].map(([key,count]) => { const [waterId, fishId] = key.split("|"); return {waterId, fishId, count}; }).sort((a,b)=>(byId(waters(), a.waterId)?.name || "").localeCompare(byId(waters(), b.waterId)?.name || "") || (byId(fishTypes(), a.fishId)?.name || "").localeCompare(byId(fishTypes(), b.fishId)?.name || ""));
+}
+function renderCaughtByWater(id, list){
+  renderFishCountGroups(id, caughtBalanceRows(list), "Gefangen/umgesetzt");
+}
+function renderFishCountGroups(id, rows, countLabel="Anzahl"){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const grouped = new Map();
+  rows.forEach(r => { if(!grouped.has(r.waterId)) grouped.set(r.waterId, []); grouped.get(r.waterId).push(r); });
+  const allWaters = waters();
+  if(!allWaters.length){ el.innerHTML = `<div class="empty">Noch keine Daten vorhanden.</div>`; return; }
+  el.innerHTML = `<div class="stock-groups">${allWaters.map(water => { const items = grouped.get(water.id) || []; return `<div class="stock-group" style="--group-color:${waterColor(water.id)}"><h4>${water.name}</h4>${items.length ? `<div class="table-wrap stock-table"><table><thead><tr><th>Fischart</th><th>${countLabel}</th></tr></thead><tbody>${items.map(r => `<tr class="tinted-row" style="--row-color:${fishColor(r.fishId)}"><td>${byId(fishTypes(), r.fishId)?.name || ""}</td><td>${r.count}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty">Keine Einträge</div>`}</div>`; }).join("")}</div>`;
+}
+
+function renderStats(){
+  const list = catches();
+  renderCaughtByWater("statsCaughtByWater", list);
+  renderStockTotals("statsStockTotals", stockBalanceRows());
+  renderStockByWater("statsStock", stockBalanceRows());
+}
+
+
+
+function ensureFishType(name, min=null){
+  const list = fishTypes();
+  let item = list.find(f => (f.name || "").toLowerCase() === name.toLowerCase());
+  if(item) return item;
+  item = {id:nextId(list), name, min};
+  list.push(item);
+  saveFishTypes(list);
+  return item;
+}
+function seedDemoStockData(){
+  if(localStorage.getItem("asv_demo_stock_seed_v01")) return;
+  const wat = waters();
+  if(!wat.length) return;
+  const fishByName = {
+    karpfen: ensureFishType("Karpfen", 35),
+    hecht: ensureFishType("Hecht", 60),
+    rotauge: ensureFishType("Rotauge", null),
+    aal: ensureFishType("Aal", 50),
+    schleie: ensureFishType("Schleie", 26),
+    zander: ensureFishType("Zander", 50)
+  };
+  const baseDate = "2026-03-15";
+  const stock = [];
+  const plan = [
+    [{fish:fishByName.karpfen,count:45},{fish:fishByName.hecht,count:12},{fish:fishByName.rotauge,count:120},{fish:fishByName.aal,count:25}],
+    [{fish:fishByName.karpfen,count:30},{fish:fishByName.zander,count:18},{fish:fishByName.schleie,count:35},{fish:fishByName.rotauge,count:90}],
+    [{fish:fishByName.karpfen,count:22},{fish:fishByName.hecht,count:8},{fish:fishByName.aal,count:15},{fish:fishByName.schleie,count:20}],
+    [{fish:fishByName.karpfen,count:18},{fish:fishByName.hecht,count:6},{fish:fishByName.zander,count:10},{fish:fishByName.rotauge,count:70}]
+  ];
+  wat.slice(0,4).forEach((water, index) => {
+    (plan[index] || plan[0]).forEach(row => stock.push({id:Date.now()+stock.length, date:baseDate, waterId:water.id, fishId:row.fish.id, count:row.count, type:"besatz", note:"Fiktiver Testbesatz", createdAt:new Date().toISOString()}));
+  });
+  saveStockMovements(stockMovements().concat(stock));
+  const c = catches();
+  if(!c.some(x => x.note === "Fiktive Test-Entnahme" || x.note === "Fiktive Test-Umsetzung" || x.note === "Fiktive Test-Rücksetzung")){
+    const w1 = wat[0], w2 = wat[1] || wat[0], w3 = wat[2] || wat[0];
+    c.unshift(
+      {id:Date.now()+101,date:"2026-04-25",memberId:1,waterId:w1.id,fishId:fishByName.karpfen.id,length:52,weight:2100,count:2,status:"entnommen",targetWaterId:null,note:"Fiktive Test-Entnahme",createdAt:new Date().toISOString()},
+      {id:Date.now()+102,date:"2026-04-25",memberId:1,waterId:w1.id,fishId:fishByName.karpfen.id,length:68,weight:5200,count:1,status:"umgesetzt",targetWaterId:w2.id,note:"Fiktive Test-Umsetzung",createdAt:new Date().toISOString()},
+      {id:Date.now()+103,date:"2026-04-25",memberId:1,waterId:w3.id,fishId:fishByName.hecht.id,length:64,weight:1800,count:1,status:"zurueckgesetzt",targetWaterId:null,note:"Fiktive Test-Rücksetzung",createdAt:new Date().toISOString()},
+      {id:Date.now()+104,date:"2026-04-25",memberId:1,waterId:w2.id,fishId:fishByName.zander.id,length:55,weight:1400,count:1,status:"entnommen",targetWaterId:null,note:"Fiktive Test-Entnahme",createdAt:new Date().toISOString()}
+    );
+    saveCatches(c);
+  }
+  localStorage.setItem("asv_demo_stock_seed_v01", "1");
+}
+
+function stockKey(waterId, fishId){ return `${waterId}|${fishId}`; }
+function stockBalanceRows(){
+  const map = new Map();
+  const add = (waterId, fishId, amount) => {
+    const key = stockKey(waterId, fishId);
+    map.set(key, (map.get(key) || 0) + Number(amount || 0));
+  };
+  stockMovements().forEach(m => {
+    const sign = m.type === "korrektur_minus" ? -1 : 1;
+    add(m.waterId, m.fishId, sign * Number(m.count || 0));
+  });
+  catches().forEach(c => {
+    const n = Number(c.count || 1);
+    if(c.status === "entnommen") add(c.waterId, c.fishId, -n);
+    if(c.status === "umgesetzt"){
+      add(c.waterId, c.fishId, -n);
+      if(c.targetWaterId) add(c.targetWaterId, c.fishId, n);
+    }
+  });
+  return [...map.entries()].map(([key,count]) => {
+    const [waterId, fishId] = key.split("|");
+    return {waterId, fishId, count};
+  }).sort((a,b) => (byId(waters(), a.waterId)?.name || "").localeCompare(byId(waters(), b.waterId)?.name || "") || (byId(fishTypes(), a.fishId)?.name || "").localeCompare(byId(fishTypes(), b.fishId)?.name || ""));
+}
+function renderStockTable(id, rows){ renderStockByWater(id, rows); }
+function renderStockByWater(id, rows){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(!rows.length){ el.innerHTML = `<div class="empty">Noch keine Bestandsdaten vorhanden.</div>`; return; }
+  const grouped = new Map();
+  rows.forEach(r => {
+    if(!grouped.has(r.waterId)) grouped.set(r.waterId, []);
+    grouped.get(r.waterId).push(r);
+  });
+  renderFishCountGroups(id, rows, "Bestand");
+}
+function renderStockTotals(id, rows){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const map = new Map();
+  rows.forEach(r => map.set(r.fishId, (map.get(r.fishId) || 0) + Number(r.count || 0)));
+  const totals = [...map.entries()].map(([fishId,count]) => ({fishId, count})).sort((a,b)=>(byId(fishTypes(), a.fishId)?.name || "").localeCompare(byId(fishTypes(), b.fishId)?.name || ""));
+  if(!totals.length){ el.innerHTML = `<div class="empty">Noch keine Bestandsdaten vorhanden.</div>`; return; }
+  el.innerHTML = `<div class="table-wrap stock-table"><table><thead><tr><th>Fischart</th><th>Gesamt</th><th>Verteilung</th></tr></thead><tbody>${totals.map(t => { const parts = rows.filter(r => sameId(r.fishId, t.fishId) && Number(r.count) !== 0).map(r => `${byId(waters(), r.waterId)?.name || "?"}: ${r.count}`).join(" / "); return `<tr class="tinted-row" style="--row-color:${fishColor(t.fishId)}"><td>${byId(fishTypes(), t.fishId)?.name || ""}</td><td>${t.count}</td><td>${parts}</td></tr>`; }).join("")}</tbody></table></div>`;
+}
+function renderStockMovements(){
+  renderStockByWater("currentStockTable", stockBalanceRows());
+  const rows = stockMovements().sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const el = document.getElementById("stockTable");
+  if(!el) return;
+  if(!rows.length){ el.innerHTML = `<div class="empty">Noch kein Besatz eingetragen.</div>`; return; }
+  el.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Datum</th><th>Art</th><th>Gewässer</th><th>Fischart</th><th>Anzahl</th><th>Bemerkung</th></tr></thead><tbody>${rows.map(m => `<tr><td>${formatDate(m.date)}</td><td>${m.type === "korrektur_minus" ? "Korrektur minus" : (m.type === "korrektur_plus" ? "Korrektur plus" : "Besatz")}</td><td>${byId(waters(), m.waterId)?.name || ""}</td><td>${byId(fishTypes(), m.fishId)?.name || ""}</td><td>${m.count}</td><td>${m.note || "–"}</td></tr>`).join("")}</tbody></table></div>`;
+}
+async function saveStockMovement(){
+  if(role() === "mitglied"){ alert("Bestände dürfen nur Vorstand, Gewässerwart oder Administrator pflegen."); return; }
+  const date = document.getElementById("stockDate").value;
+  const count = Number(document.getElementById("stockCount").value);
+  if(!date || !count || count < 1){ notice("adminNotice","error","Bitte Datum und Anzahl eintragen."); return; }
+  const payload = {
+    movement_date:date,
+    water_id:document.getElementById("stockWater").value,
+    fish_type_id:document.getElementById("stockFish").value,
+    count,
+    type:document.getElementById("stockType").value,
+    note:document.getElementById("stockNote").value.trim() || null
+  };
+  try{
+    const row = await saveSimpleRow("stock_movements", payload);
+    const item = normalizeStock(row);
+    saveStockMovements([item, ...stockMovements()]);
+    document.getElementById("stockCount").value = 1;
+    document.getElementById("stockNote").value = "";
+    renderAll();
+    notice("adminNotice","ok","Bestandsbewegung wurde gespeichert.");
+  }catch(err){
+    notice("adminNotice","error","Bestandsbewegung konnte nicht gespeichert werden: " + err.message);
+  }
+}
+
+
+function showAdminPanel(name){
+  document.querySelectorAll(".admin-panel").forEach(p => p.style.display = "none");
+  document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
+  document.getElementById("adminPanel" + name.charAt(0).toUpperCase() + name.slice(1)).style.display = "block";
+  document.querySelector(`[data-admin="${name}"]`).classList.add("active");
+  clearNotice("adminNotice");
+}
+function adminTable(headers, rows){
+  return `<div class="table-wrap"><table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
+}
+function memberStatusLabel(status){
+  return ({aktiv:"Aktives Mitglied",neu:"Neues Mitglied",ehrenmitglied:"Ehrenmitglied",pausierend:"Pausierend"})[status] || "Aktives Mitglied";
+}
+function roleLabel(role){
+  return roles().find(r => r.id === role)?.label || role || "Mitglied";
+}
+function hasBoardAccess(){ return ["admin","vorstand"].includes(role()); }
+function roleOptions(selected="mitglied"){
+  return roles().map(r => `<option value="${r.id}" ${r.id === selected ? "selected" : ""}>${r.label}</option>`).join("");
+}
+function slugRole(label){
+  return label.toLowerCase().trim().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"") || `rolle_${Date.now()}`;
+}
+function defaultPasswordForMember(member){
+  return (member?.name || "").replace(/\s+/g, "");
+}
+async function passwordHash(memberId, password){
+  const text = `${memberId}|${password}`;
+  const bytes = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2,"0")).join("");
+}
+async function ensureAuthData(){
+  const list = members();
+  let changed = false;
+  for(const member of list){
+    if(member.nr === "034" && member.role === "mitglied"){
+      member.role = "admin";
+      changed = true;
+    }
+    if(member.nr === "008" && member.role === "mitglied"){
+      member.role = "vorstand";
+      changed = true;
+    }
+    if(!member.passwordHash){
+      member.passwordHash = await passwordHash(member.id, defaultPasswordForMember(member));
+      member.mustChangePassword = true;
+      changed = true;
+    }
+  }
+  if(changed) saveMembers(list);
+}
+function loggedInMember(){
+  const id = sessionStorage.getItem("asv_current_member_id");
+  return id ? byId(members(), id) : null;
+}
+function handleLoginKey(event){
+  if(event.key !== "Enter") return;
+  event.preventDefault();
+  loginMember();
+}
+
+async function registerMember(){
+  const email = document.getElementById("loginEmail")?.value.trim();
+  const password = document.getElementById("loginPassword").value;
+  if(!email || !password){ alert("Bitte E-Mail und gewünschtes Passwort eingeben."); return; }
+  if(password.length < 8){ alert("Bitte ein Passwort mit mindestens 8 Zeichen verwenden."); return; }
+  if(!supabaseConfigured()){
+    alert("Bitte zuerst SUPABASE_URL und SUPABASE_ANON_KEY in der HTML Datei eintragen.");
+    return;
+  }
+  try{
+    const redirectTo = window.location.href.split("#")[0];
+    const {data,error} = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options:{emailRedirectTo: redirectTo}
+    });
+    dbError(error);
+    document.getElementById("loginPassword").value = "";
+    if(data?.user && data?.session){
+      alert("Erstzugang wurde erstellt. Du bist angemeldet. Falls das Mitgliedsprofil nicht sofort lädt, bitte einmal abmelden und wieder anmelden.");
+      currentAuthUser = data.user;
+      await loadCloudData();
+      const member = members().find(m => m.auth_user_id === data.user.id);
+      if(member){
+        sessionStorage.setItem("asv_current_member_id", String(member.id));
+        applySessionView();
+        showSection("entry");
+      }
+      return;
+    }
+    alert("Erstzugang wurde angelegt. Bitte prüfe deine E-Mails und bestätige den Supabase Link. Danach kannst du dich mit E-Mail und Passwort anmelden.");
+  }catch(err){
+    alert("Erstzugang konnte nicht erstellt werden: " + err.message);
+  }
+}
+
+async function loginMember(){
+  const email = document.getElementById("loginEmail")?.value.trim();
+  const password = document.getElementById("loginPassword").value;
+  if(!email || !password){ alert("Bitte E-Mail und Passwort eingeben."); return; }
+  if(!supabaseConfigured()){
+    alert("Bitte zuerst SUPABASE_URL und SUPABASE_ANON_KEY in der HTML Datei eintragen.");
+    return;
+  }
+  try{
+    const {data,error} = await supabaseClient.auth.signInWithPassword({email, password});
+    dbError(error);
+    currentAuthUser = data.user;
+    await loadCloudData();
+    const member = members().find(m => m.auth_user_id === data.user.id);
+    if(!member){
+      await supabaseClient.auth.signOut();
+      alert("Login erfolgreich, aber kein Mitgliedsprofil gefunden. In der Tabelle members muss auth_user_id auf diesen Supabase Benutzer zeigen.");
+      return;
+    }
+    sessionStorage.setItem("asv_current_member_id", String(member.id));
+    document.getElementById("loginPassword").value = "";
+    applySessionView();
+    showSection("entry");
+  }catch(err){
+    alert("Anmeldung fehlgeschlagen: " + err.message);
+  }
+}
+async function logoutMember(){
+  sessionStorage.removeItem("asv_current_member_id");
+  if(supabaseConfigured()) await supabaseClient.auth.signOut();
+  currentAuthUser = null;
+  document.getElementById("oldPassword").value = "";
+  document.getElementById("newPassword").value = "";
+  document.getElementById("newPasswordConfirm").value = "";
+  applySessionView();
+  showSection("start");
+}
+function applySessionView(){
+  const member = loggedInMember();
+  const loginState = document.getElementById("loginState");
+  const passwordCard = document.getElementById("passwordChangeCard");
+  const logoutButton = document.getElementById("logoutButton");
+  const loginCard = document.getElementById("loginCard");
+  const topbar = document.getElementById("topbar");
+  document.body.classList.toggle("app-mode", Boolean(member));
+  if(member){
+    document.getElementById("memberSelect").value = member.id;
+    if(document.getElementById("loginEmail") && currentAuthUser?.email) document.getElementById("loginEmail").value = currentAuthUser.email;
+    document.getElementById("roleSelect").value = member.role || "mitglied";
+    loginState.textContent = `${member.nr} · ${member.name} · ${roleLabel(member.role)}`;
+    passwordCard.style.display = "flex";
+    logoutButton.style.display = "inline-flex";
+    loginCard.style.display = "none";
+    topbar.style.display = "flex";
+    passwordCard.appendChild(logoutButton);
+  } else {
+    document.body.classList.remove("app-mode");
+    document.getElementById("roleSelect").value = "mitglied";
+    loginState.textContent = "Niemand";
+    passwordCard.style.display = "none";
+    logoutButton.style.display = "none";
+    loginCard.style.display = "flex";
+    topbar.style.display = "flex";
+  }
+  updateRoleView();
+}
+async function changeOwnPassword(){
+  const member = loggedInMember();
+  if(!member){ alert("Bitte zuerst anmelden."); return; }
+  const oldPassword = document.getElementById("oldPassword").value;
+  const newPassword = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("newPasswordConfirm").value;
+  if(!oldPassword || !newPassword || !confirmPassword){ alert("Bitte alle Passwortfelder ausfüllen."); return; }
+  if(newPassword.length < 8){ alert("Das neue Passwort sollte mindestens 8 Zeichen haben."); return; }
+  if(newPassword !== confirmPassword){ alert("Die neuen Passwörter stimmen nicht überein."); return; }
+  if(!supabaseConfigured()){ alert("Supabase ist noch nicht konfiguriert."); return; }
+  try{
+    const email = currentAuthUser?.email || document.getElementById("loginEmail")?.value;
+    if(email){
+      const check = await supabaseClient.auth.signInWithPassword({email, password:oldPassword});
+      dbError(check.error);
+    }
+    const {error} = await supabaseClient.auth.updateUser({password:newPassword});
+    dbError(error);
+    await supabaseClient.from("members").update({must_change_password:false}).eq("id", member.id);
+    member.mustChangePassword = false;
+    member.must_change_password = false;
+    document.getElementById("oldPassword").value = "";
+    document.getElementById("newPassword").value = "";
+    document.getElementById("newPasswordConfirm").value = "";
+    alert("Passwort wurde geändert.");
+  }catch(err){
+    alert("Passwortänderung fehlgeschlagen: " + err.message);
+  }
+}
+function resetMemberPassword(id){
+  alert("Passwort Zurücksetzen läuft ab jetzt über Supabase Auth. Im Browser darf der öffentliche Anon Key keine fremden Benutzerpasswörter ändern. Neues Passwort daher in Supabase unter Authentication > Users setzen oder später per Edge Function absichern.");
+}
+async function saveMemberPasswordReset(){
+  alert("Passwort Zurücksetzen läuft ab jetzt über Supabase Auth und nicht mehr über die lokale Testlogik.");
+}
+function cancelPasswordReset(){
+  document.getElementById("passwordResetPanel").style.display = "none";
+  document.getElementById("passwordResetMemberId").value = "";
+  document.getElementById("passwordResetMember").textContent = "Kein Mitglied ausgewählt.";
+  document.getElementById("adminNewPassword").value = "";
+  document.getElementById("adminNewPasswordConfirm").value = "";
+}
+function renderMemberFilterOptions(){
+  const statusSelect = document.getElementById("memberStatusFilter");
+  const roleSelectFilter = document.getElementById("memberRoleFilter");
+  if(!statusSelect || !roleSelectFilter) return;
+  keepSelect("memberStatusFilter", `<option value="">Alle Status</option><option value="aktiv">Aktiv</option><option value="neu">Neu</option><option value="ehrenmitglied">Ehrenmitglied</option><option value="pausierend">Pausierend</option>`);
+  keepSelect("memberRoleFilter", `<option value="">Alle Rollen</option>` + roles().map(r => `<option value="${r.id}">${r.label}</option>`).join(""));
+}
+function filteredMembersForAdmin(){
+  const q = (document.getElementById("memberSearch")?.value || "").trim().toLowerCase();
+  const status = document.getElementById("memberStatusFilter")?.value || "";
+  const roleFilter = document.getElementById("memberRoleFilter")?.value || "";
+  return members().filter(m => (!q || `${m.nr} ${m.name}`.toLowerCase().includes(q)) && (!status || m.status === status) && (!roleFilter || m.role === roleFilter));
+}
+async function addCustomRole(){
+  if(role() !== "admin"){ alert("Eigene Rollen dürfen nur Administratoren anlegen."); return; }
+  const input = document.getElementById("newRoleName");
+  const label = input.value.trim();
+  if(!label){ alert("Bitte Rollennamen eintragen."); return; }
+  const list = roles();
+  const id = slugRole(label);
+  if(list.some(r => r.id === id || r.label.toLowerCase() === label.toLowerCase())){ alert("Diese Rolle gibt es bereits."); return; }
+  const row = {id,label,system:false};
+  saveRoles([...list, row]);
+  input.value = "";
+  fillSelects();
+  renderAdmin();
+}
+
+function renderCustomRoles(){
+  const box = document.getElementById("customRolesList");
+  const panel = document.getElementById("roleAdminTools");
+  if(!box || !panel) return;
+  panel.style.display = role() === "admin" ? "grid" : "none";
+  const custom = roles().filter(r => !r.system);
+  box.textContent = custom.length ? `Eigene Rollen: ${custom.map(r => r.label).join(", ")}` : "Noch keine eigenen Rollen angelegt.";
+}
+function renderAdmin(){
+  renderMemberFilterOptions();
+  renderCustomRoles();
+  const canResetPassword = role() === "admin";
+  const memRows = filteredMembersForAdmin().map(m => `<tr><td>${m.nr}</td><td>${m.name}</td><td>${memberStatusLabel(m.status)}</td><td>${roleLabel(m.role)}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editMember(${jsId(m.id)})">Bearbeiten</button>${canResetPassword ? `<button class="btn-light btn-small" onclick="resetMemberPassword(${jsId(m.id)})">Passwort neu</button>` : ""}<button class="btn-danger btn-small" onclick="deleteMember(${jsId(m.id)})">Löschen</button></div></td></tr>`);
+  document.getElementById("membersTable").innerHTML = memRows.length ? adminTable(["Nr.","Name","Status","Rolle","Aktion"], memRows) : `<div class="empty">Keine Mitglieder passend zum Filter.</div>`;
+  const watRows = waters().map(w => `<tr><td><span class="color-swatch" style="background:${waterColor(w.id)}"></span></td><td>${w.name}</td><td>${w.type}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editWater(${jsId(w.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteWater(${jsId(w.id)})">Löschen</button></div></td></tr>`);
+  document.getElementById("watersTable").innerHTML = adminTable(["Farbe","Name","Typ","Aktion"], watRows);
+  const fishRows = fishTypes().map(f => `<tr><td><span class="color-swatch" style="background:${fishColor(f.id)}"></span></td><td>${f.name}</td><td>${f.min ? f.min + " cm" : "offen"}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editFish(${jsId(f.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteFish(${jsId(f.id)})">Löschen</button></div></td></tr>`);
+  document.getElementById("fishTable").innerHTML = adminTable(["Farbe","Name","Mindestmaß","Aktion"], fishRows);
+  renderStockMovements();
+}
+
+async function saveMember(){
+  const id = document.getElementById("memberEditId").value;
+  const nr = document.getElementById("memberNr").value.trim();
+  const name = document.getElementById("memberName").value.trim();
+  const r = document.getElementById("memberRole").value;
+  const status = document.getElementById("memberStatus").value;
+  if(!nr || !name){ notice("adminNotice","error","Bitte Mitgliedsnummer und Name eintragen."); return; }
+  try{
+    const row = normalizeMember(await saveSimpleRow("members", {member_no:nr,name,role:r,status}, id));
+    let list = members();
+    if(id){
+      list = list.map(m => sameId(m.id, id) ? row : m);
+      notice("adminNotice","ok","Mitglied wurde bearbeitet.");
+    } else {
+      list.push(row);
+      notice("adminNotice","ok","Mitglied wurde hinzugefügt. Hinweis: Für den Login muss in Supabase zusätzlich ein Auth Benutzer angelegt und mit auth_user_id verknüpft werden.");
+    }
+    saveMembers(list);
+    cancelMemberEdit(false);
+    renderAll();
+  }catch(err){
+    notice("adminNotice","error","Mitglied konnte nicht gespeichert werden: " + err.message);
+  }
+}
+
+function editMember(id){
+  const m = byId(members(),id); if(!m) return;
+  document.getElementById("memberEditId").value = m.id;
+  document.getElementById("memberNr").value = m.nr;
+  document.getElementById("memberName").value = m.name;
+  document.getElementById("memberRole").value = m.role;
+  document.getElementById("memberStatus").value = m.status || "aktiv";
+  document.getElementById("memberFormTitle").textContent = "Mitglied bearbeiten";
+}
+function cancelMemberEdit(clear=true){
+  document.getElementById("memberEditId").value = "";
+  document.getElementById("memberNr").value = "";
+  document.getElementById("memberName").value = "";
+  document.getElementById("memberRole").value = "mitglied";
+  document.getElementById("memberStatus").value = "aktiv";
+  document.getElementById("memberFormTitle").textContent = "Mitglied hinzufügen";
+  if(clear) clearNotice("adminNotice");
+}
+async function deleteMember(id){
+  if(catches().some(c => sameId(c.memberId, id))){ notice("adminNotice","warn","Dieses Mitglied ist bereits mit Fängen verknüpft und kann nicht gelöscht werden."); return; }
+  if(!confirm("Mitglied wirklich löschen?")) return;
+  try{
+    await deleteSimpleRow("members", id);
+    saveMembers(members().filter(m => !sameId(m.id, id)));
+    notice("adminNotice","ok","Mitglied wurde gelöscht.");
+    renderAll();
+  }catch(err){ notice("adminNotice","error","Mitglied konnte nicht gelöscht werden: " + err.message); }
+}
+
+
+async function saveWater(){
+  const id = document.getElementById("waterEditId").value;
+  const name = document.getElementById("waterName").value.trim();
+  const type = document.getElementById("waterType").value;
+  const color = document.getElementById("waterColor").value;
+  if(!name){ notice("adminNotice","error","Bitte einen Gewässernamen eintragen."); return; }
+  try{
+    const row = await saveSimpleRow("waters", {name,type,color}, id);
+    let list = waters();
+    if(id){ list = list.map(w => sameId(w.id, id) ? row : w); notice("adminNotice","ok","Gewässer wurde bearbeitet."); }
+    else { list.push(row); notice("adminNotice","ok","Gewässer wurde hinzugefügt."); }
+    saveWaters(list);
+    cancelWaterEdit(false);
+    renderAll();
+  }catch(err){ notice("adminNotice","error","Gewässer konnte nicht gespeichert werden: " + err.message); }
+}
+
+function editWater(id){
+  const w = byId(waters(),id); if(!w) return;
+  document.getElementById("waterEditId").value = w.id;
+  document.getElementById("waterName").value = w.name;
+  document.getElementById("waterType").value = w.type;
+  document.getElementById("waterColor").value = waterColor(w.id);
+  document.getElementById("waterFormTitle").textContent = "Gewässer bearbeiten";
+}
+function cancelWaterEdit(clear=true){
+  document.getElementById("waterEditId").value = "";
+  document.getElementById("waterName").value = "";
+  document.getElementById("waterType").value = "Teich";
+  document.getElementById("waterColor").value = "#8fcfbd";
+  document.getElementById("waterFormTitle").textContent = "Gewässer hinzufügen";
+  if(clear) clearNotice("adminNotice");
+}
+async function deleteWater(id){
+  if(catches().some(c => sameId(c.waterId, id))){ notice("adminNotice","warn","Dieses Gewässer ist bereits mit Fängen verknüpft und kann nicht gelöscht werden."); return; }
+  if(!confirm("Gewässer wirklich löschen?")) return;
+  try{
+    await deleteSimpleRow("waters", id);
+    saveWaters(waters().filter(w => !sameId(w.id, id)));
+    notice("adminNotice","ok","Gewässer wurde gelöscht.");
+    renderAll();
+  }catch(err){ notice("adminNotice","error","Gewässer konnte nicht gelöscht werden: " + err.message); }
+}
+
+
+async function saveFish(){
+  const id = document.getElementById("fishEditId").value;
+  const name = document.getElementById("fishName").value.trim();
+  const minRaw = document.getElementById("fishMin").value;
+  const min = minRaw === "" ? null : Number(minRaw);
+  const color = document.getElementById("fishColor").value;
+  if(!name){ notice("adminNotice","error","Bitte eine Fischart eintragen."); return; }
+  try{
+    const row = normalizeFish(await saveSimpleRow("fish_types", {name,min_size_cm:min,color}, id));
+    let list = ensureState().fish;
+    if(id){ list = list.map(f => sameId(f.id, id) ? row : f); notice("adminNotice","ok",`Fischart „${name}“ wurde bearbeitet.`); }
+    else { list.push(row); notice("adminNotice","ok",`Fischart „${name}“ wurde hinzugefügt.`); }
+    saveFishTypes(list);
+    cancelFishEdit(false);
+    renderAll();
+  }catch(err){ notice("adminNotice","error","Fischart konnte nicht gespeichert werden: " + err.message); }
+}
+
+function editFish(id){
+  const f = byId(fishTypes(),id); if(!f) return;
+  document.getElementById("fishEditId").value = f.id;
+  document.getElementById("fishName").value = f.name;
+  document.getElementById("fishMin").value = f.min ?? "";
+  document.getElementById("fishColor").value = fishColor(f.id);
+  document.getElementById("fishFormTitle").textContent = "Fischart bearbeiten";
+}
+function cancelFishEdit(clear=true){
+  document.getElementById("fishEditId").value = "";
+  document.getElementById("fishName").value = "";
+  document.getElementById("fishMin").value = "";
+  document.getElementById("fishColor").value = "#8fcfbd";
+  document.getElementById("fishFormTitle").textContent = "Fischart hinzufügen";
+  if(clear) clearNotice("adminNotice");
+}
+
+
+async function deleteFish(id){
+  if(catches().some(c => sameId(c.fishId, id))){
+    notice("adminNotice","warn","Diese Fischart ist bereits mit Fängen verknüpft und kann nicht gelöscht werden.");
+    return;
+  }
+  if(!confirm("Fischart wirklich löschen?")) return;
+  try{
+    await deleteSimpleRow("fish_types", id);
+    saveFishTypes(ensureState().fish.filter(f => !sameId(f.id, id)));
+    notice("adminNotice","ok","Fischart wurde gelöscht.");
+    renderAll();
+  }catch(err){ notice("adminNotice","error","Fischart konnte nicht gelöscht werden: " + err.message); }
+}
+
+async function resetLocalTestData(){
+  if(!confirm("Lokalen Zwischenspeicher wirklich leeren? Die Supabase Cloud Daten bleiben erhalten.")) return;
+  localStorage.removeItem(keys.members);
+  localStorage.removeItem(keys.waters);
+  localStorage.removeItem(keys.fish);
+  localStorage.removeItem(keys.catches);
+  localStorage.removeItem(keys.stock);
+  localStorage.removeItem(keys.roles);
+  localStorage.removeItem("asv_demo_stock_seed_v01");
+  cancelMemberEdit(false);
+  cancelWaterEdit(false);
+  cancelFishEdit(false);
+  appState = null;
+  await loadCloudData();
+  renderAll();
+  notice("adminNotice","ok","Lokaler Zwischenspeicher wurde geleert und die Cloud Daten wurden neu geladen.");
+}
+
+function renderAll(){
+  fillSelects();
+  renderMyCatches();
+  renderOverview();
+  renderStats();
+  renderAdmin();
+}
+init();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
