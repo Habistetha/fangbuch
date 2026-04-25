@@ -613,6 +613,91 @@
       }
     }
 
+  
+    /* Finaler Handy Fix v1.5: Loginfelder im Hochformat und Querformat gleich normal */
+    @media (pointer: coarse), (max-width: 900px){
+      body:not(.app-mode) .topbar{
+        width:100% !important;
+        margin:0 auto 14px !important;
+        padding:0 14px !important;
+        display:flex !important;
+        justify-content:center !important;
+      }
+
+      body:not(.app-mode) #loginCard{
+        width:min(430px, calc(100vw - 28px)) !important;
+        max-width:430px !important;
+        min-width:0 !important;
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:12px !important;
+        padding:18px !important;
+        margin:0 auto !important;
+        border-radius:24px !important;
+        align-items:stretch !important;
+        justify-content:stretch !important;
+      }
+
+      body:not(.app-mode) #loginCard strong{
+        width:100% !important;
+        text-align:center !important;
+        font-size:18px !important;
+        line-height:1.2 !important;
+        margin:0 0 2px !important;
+      }
+
+      body:not(.app-mode) #loginEmail,
+      body:not(.app-mode) #loginPassword{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:100% !important;
+        height:52px !important;
+        min-height:52px !important;
+        max-height:52px !important;
+        flex:none !important;
+        display:block !important;
+        font-size:16px !important;
+        line-height:1.2 !important;
+        padding:12px 14px !important;
+        border-radius:16px !important;
+      }
+
+      body:not(.app-mode) #loginCard button{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:100% !important;
+        min-height:52px !important;
+        max-height:none !important;
+        flex:none !important;
+        display:block !important;
+        font-size:15px !important;
+        line-height:1.2 !important;
+        padding:12px 14px !important;
+        border-radius:16px !important;
+        text-align:center !important;
+      }
+    }
+
+    @media (pointer: coarse) and (orientation: landscape){
+      body:not(.app-mode) #loginCard{
+        width:min(520px, 94vw) !important;
+        max-width:520px !important;
+        padding:14px !important;
+        gap:10px !important;
+      }
+
+      body:not(.app-mode) #loginEmail,
+      body:not(.app-mode) #loginPassword{
+        height:50px !important;
+        min-height:50px !important;
+        max-height:50px !important;
+      }
+
+      body:not(.app-mode) #loginCard button{
+        min-height:48px !important;
+      }
+    }
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -924,7 +1009,7 @@
         </article>
       </section>
     </main>
-    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.4</div>
+    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v1.5</div>
   </div>
 
 <script>
