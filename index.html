@@ -176,9 +176,9 @@
     .member-filters{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;margin-bottom:12px}
     .role-admin-tools{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
     .rule-bad td{background:#fff2f1;color:#621b17}
+    .rule-warn td{background:#fff8dc;color:#5d4300}
+    .rule-ok{color:#0f4c3d;font-weight:800}
     .rule-note{color:var(--danger);font-weight:800;font-size:13px}
-    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .rule-summary{font-size:12px;color:var(--muted);line-height:1.35}
     th,td{padding:12px 13px;text-align:left;border-bottom:1px solid rgba(22,118,91,.13);font-size:14px;vertical-align:middle}
     th{background:#edf7f2;color:var(--green-dark);font-size:13px}
     tr:last-child td{border-bottom:0}
@@ -969,28 +969,22 @@
                   <div class="field"><label>Name</label><input id="fishName" placeholder="z. B. Schleie"></div><br>
                   <div class="field"><label>Kategorie</label>
                     <select id="fishCategory">
-                      <option value="friedfisch">Friedfisch</option>
+                      <option value="sonstige">Sonstige</option>
                       <option value="raubfisch">Raubfisch</option>
-                      <option value="sonstige">Sonstige Fischart</option>
+                      <option value="friedfisch">Friedfisch</option>
                     </select>
                   </div><br>
                   <div class="field"><label>Mindestmaß in cm</label><input id="fishMin" type="number" min="0" step="1" placeholder="leer lassen, falls offen"></div><br>
-                  <div class="mini-grid">
-                    <div class="field"><label>Schonzeit von</label><input id="fishClosedFrom" type="date"></div>
-                    <div class="field"><label>Schonzeit bis</label><input id="fishClosedTo" type="date"></div>
-                  </div><br>
-                  <div class="mini-grid">
-                    <div class="field"><label>Max. pro Tag</label><input id="fishLimitDay" type="number" min="0" step="1" placeholder="offen"></div>
-                    <div class="field"><label>Max. pro Woche</label><input id="fishLimitWeek" type="number" min="0" step="1" placeholder="offen"></div>
-                  </div><br>
-                  <div class="mini-grid">
-                    <div class="field"><label>Max. pro Monat</label><input id="fishLimitMonth" type="number" min="0" step="1" placeholder="offen"></div>
-                    <div class="field"><label>Max. pro Jahr</label><input id="fishLimitYear" type="number" min="0" step="1" placeholder="offen"></div>
-                  </div><br>
+                  <div class="field"><label>Schonzeit von</label><input id="fishClosedFrom" type="date"></div><br>
+                  <div class="field"><label>Schonzeit bis</label><input id="fishClosedTo" type="date"></div><br>
+                  <div class="field"><label>Max. Entnahme pro Tag</label><input id="fishMaxDay" type="number" min="0" step="1" placeholder="leer = keine Grenze"></div><br>
+                  <div class="field"><label>Max. Entnahme pro Woche</label><input id="fishMaxWeek" type="number" min="0" step="1" placeholder="leer = keine Grenze"></div><br>
+                  <div class="field"><label>Max. Entnahme pro Monat</label><input id="fishMaxMonth" type="number" min="0" step="1" placeholder="leer = keine Grenze"></div><br>
+                  <div class="field"><label>Max. Entnahme pro Jahr</label><input id="fishMaxYear" type="number" min="0" step="1" placeholder="leer = keine Grenze"></div><br>
                   <div class="field"><label>Entnahme erlaubt</label>
                     <select id="fishTakeAllowed">
-                      <option value="ja">Ja</option>
-                      <option value="nein">Nein, nur zurücksetzen</option>
+                      <option value="true">Ja</option>
+                      <option value="false">Nein</option>
                     </select>
                   </div><br>
                   <div class="field"><label>Farbe</label><input id="fishColor" class="color-input" type="color" value="#8fcfbd"></div><br>
@@ -1310,9 +1304,9 @@ const defaults = {
   ],
   fish:[
     {id:1,name:"Karpfen",min:35,category:"friedfisch",take_allowed:true},
-    {id:2,name:"Hecht",min:60,category:"raubfisch",limit_day:1,take_allowed:true},
-    {id:3,name:"Zander",min:50,category:"raubfisch",limit_year:1,take_allowed:true},
-    {id:4,name:"Forelle",min:28,category:"raubfisch",limit_day:3,take_allowed:true},
+    {id:2,name:"Hecht",min:60,category:"raubfisch",take_allowed:true,max_per_day:1},
+    {id:3,name:"Zander",min:50,category:"raubfisch",take_allowed:true,max_per_year:1},
+    {id:4,name:"Forelle",min:28,category:"raubfisch",take_allowed:true},
     {id:5,name:"Rotauge",min:null,category:"friedfisch",take_allowed:true},
     {id:6,name:"Barsch",min:null,category:"raubfisch",take_allowed:true}
   ],
@@ -1385,13 +1379,13 @@ function normalizeFish(row){
     ...row,
     min: row.min_size_cm ?? row.min ?? null,
     min_size_cm: row.min_size_cm ?? row.min ?? null,
-    category: row.category ?? row.fish_category ?? "friedfisch",
-    closed_from: row.closed_from ?? row.closedFrom ?? "",
-    closed_to: row.closed_to ?? row.closedTo ?? "",
-    limit_day: row.limit_day ?? row.limitDay ?? null,
-    limit_week: row.limit_week ?? row.limitWeek ?? null,
-    limit_month: row.limit_month ?? row.limitMonth ?? null,
-    limit_year: row.limit_year ?? row.limitYear ?? null,
+    category: row.category ?? "sonstige",
+    closed_from: row.closed_from ?? row.closedFrom ?? null,
+    closed_to: row.closed_to ?? row.closedTo ?? null,
+    max_per_day: row.max_per_day ?? row.maxPerDay ?? null,
+    max_per_week: row.max_per_week ?? row.maxPerWeek ?? null,
+    max_per_month: row.max_per_month ?? row.maxPerMonth ?? null,
+    max_per_year: row.max_per_year ?? row.maxPerYear ?? null,
     take_allowed: row.take_allowed ?? row.takeAllowed ?? true
   };
 }
@@ -1446,7 +1440,7 @@ async function loadCloudData(){
   const [m,w,f,c,st] = await Promise.all([
     supabaseClient.from("members").select("id,member_no,name,role,status,auth_user_id,must_change_password,email").order("name", {ascending:true}),
     supabaseClient.from("waters").select("id,name,type,color").order("name", {ascending:true}),
-    supabaseClient.from("fish_types").select("*").order("name", {ascending:true}),
+    supabaseClient.from("fish_types").select("id,name,min_size_cm,color,category,closed_from,closed_to,max_per_day,max_per_week,max_per_month,max_per_year,take_allowed").order("name", {ascending:true}),
     supabaseClient.from("catches").select("id,catch_date,member_id,water_id,fish_type_id,length_cm,weight_g,count,status,target_water_id,note,created_at").order("catch_date", {ascending:false}),
     supabaseClient.from("stock_movements").select("id,movement_date,water_id,fish_type_id,count,type,note,created_at").order("movement_date", {ascending:false})
   ]);
@@ -1681,9 +1675,25 @@ function toggleTransferField(){
   const field = document.getElementById("transferTargetField");
   if(field) field.style.display = selected === "umgesetzt" ? "grid" : "none";
 }
+function categoryLabel(value){
+  return value === "raubfisch" ? "Raubfisch" : (value === "friedfisch" ? "Friedfisch" : "Sonstige");
+}
+function numberOrNull(value){
+  return value === "" || value === null || value === undefined ? null : Number(value);
+}
 function showFishHint(){
   const f = byId(fishTypes(), document.getElementById("fischart").value);
-  document.getElementById("fishHint").textContent = f ? fishRuleSummary(f) : "";
+  if(!f){ document.getElementById("fishHint").textContent = ""; return; }
+  const parts = [];
+  parts.push(f.min ? `Mindestmaß: ${f.min} cm` : "Kein Mindestmaß hinterlegt");
+  parts.push(`Kategorie: ${categoryLabel(f.category)}`);
+  if(f.closed_from && f.closed_to) parts.push(`Schonzeit: ${formatDate(f.closed_from)} bis ${formatDate(f.closed_to)}`);
+  if(f.take_allowed === false) parts.push("Entnahme nicht erlaubt");
+  if(f.max_per_day) parts.push(`max. ${f.max_per_day} pro Tag`);
+  if(f.max_per_week) parts.push(`max. ${f.max_per_week} pro Woche`);
+  if(f.max_per_month) parts.push(`max. ${f.max_per_month} pro Monat`);
+  if(f.max_per_year) parts.push(`max. ${f.max_per_year} pro Jahr`);
+  document.getElementById("fishHint").textContent = parts.join(" · ");
 }
 function notice(id, type, text){
   const el = document.getElementById(id);
@@ -1723,9 +1733,9 @@ document.getElementById("catchForm").addEventListener("submit", async e => {
   const d = new Date(data.date); d.setHours(0,0,0,0);
   const today = new Date(); today.setHours(0,0,0,0);
   if(d > today) warnings.push("Das Fangdatum liegt in der Zukunft.");
-  const f = byId(fishTypes(), data.fishId);
-  if(f?.min && data.length && Number(data.length) < f.min) warnings.push(`Die Länge liegt unter dem Mindestmaß von ${f.min} cm.`);
-  if(data.status === "entnommen" && f?.min && Number(data.count || 1) > 3) warnings.push("Die Fangbegrenzung von 3 entnommenen Fischen mit Mindestmaß wird überschritten.");
+  const ruleCheck = catchRuleIssues(data, editId);
+  ruleCheck.errors.forEach(x => errors.push(x));
+  ruleCheck.warnings.forEach(x => warnings.push(x));
   if(errors.length){ notice("formNotice","error",errors.join(" ")); return; }
   try{
     const saved = await saveCatchCloud(data, editId);
@@ -1749,12 +1759,63 @@ document.getElementById("catchForm").addEventListener("submit", async e => {
 });
 
 function formatDate(v){ return v ? new Date(v + "T00:00:00").toLocaleDateString("de-DE") : ""; }
-function catchRuleIssues(c){
-  const issues = [];
+function dateInRange(dateValue, fromValue, toValue){
+  if(!dateValue || !fromValue || !toValue) return false;
+  const date = new Date(dateValue + "T00:00:00");
+  const from = new Date(fromValue + "T00:00:00");
+  const to = new Date(toValue + "T00:00:00");
+  return date >= from && date <= to;
+}
+function weekKey(dateValue){
+  const d = new Date(dateValue + "T00:00:00");
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
+  const week1 = new Date(d.getFullYear(), 0, 4);
+  return `${d.getFullYear()}-${1 + Math.round(((d - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7)}`;
+}
+function samePeriod(a, b, period){
+  const da = new Date(a + "T00:00:00");
+  const db = new Date(b + "T00:00:00");
+  if(period === "day") return a === b;
+  if(period === "week") return weekKey(a) === weekKey(b);
+  if(period === "month") return da.getFullYear() === db.getFullYear() && da.getMonth() === db.getMonth();
+  if(period === "year") return da.getFullYear() === db.getFullYear();
+  return false;
+}
+function takenCount(memberId, fishId, date, period, excludeId=""){
+  return catches()
+    .filter(x => !sameId(x.id, excludeId) && sameId(x.memberId, memberId) && sameId(x.fishId, fishId) && x.status === "entnommen" && samePeriod(x.date, date, period))
+    .reduce((sum,x)=>sum+Number(x.count||1),0);
+}
+function takenCategoryCount(memberId, category, date, period, excludeId=""){
+  return catches()
+    .filter(x => !sameId(x.id, excludeId) && sameId(x.memberId, memberId) && x.status === "entnommen" && samePeriod(x.date, date, period) && byId(fishTypes(), x.fishId)?.category === category)
+    .reduce((sum,x)=>sum+Number(x.count||1),0);
+}
+function catchRuleIssues(c, excludeId=""){
+  const errors = [];
+  const warnings = [];
   const f = byId(fishTypes(), c.fishId);
-  if(c.status === "entnommen" && f?.min && c.length && Number(c.length) < Number(f.min)) issues.push(`Unter Mindestmaß (${f.min} cm)`);
-  if(c.status === "entnommen" && f?.min && dailyProtectedTake(c.memberId, c.date) > 3) issues.push("Fangbegrenzung überschritten (max. 3 Fische mit Mindestmaß pro Tag)");
-  return issues;
+  const n = Number(c.count || 1);
+  if(!f) return {errors, warnings};
+  if(c.status === "entnommen" && f?.min && c.length && Number(c.length) < Number(f.min)) errors.push(`Unter Mindestmaß (${f.min} cm)`);
+  if(c.status === "entnommen" && f.take_allowed === false) errors.push("Entnahme für diese Fischart nicht erlaubt");
+  if(c.status === "entnommen" && dateInRange(c.date, f.closed_from, f.closed_to)) errors.push(`Schonzeit (${formatDate(f.closed_from)} bis ${formatDate(f.closed_to)})`);
+  const limits = [
+    ["day", f.max_per_day, "Tageslimit"],
+    ["week", f.max_per_week, "Wochenlimit"],
+    ["month", f.max_per_month, "Monatslimit"],
+    ["year", f.max_per_year, "Jahreslimit"]
+  ];
+  if(c.status === "entnommen"){
+    limits.forEach(([period, limit, label]) => {
+      if(limit && takenCount(c.memberId, c.fishId, c.date, period, excludeId) + n > Number(limit)) errors.push(`${label} für ${f.name} überschritten (max. ${limit})`);
+    });
+    // Vereinsregel als Startwert: maximal 1 Raubfisch und maximal 2 Friedfische pro Tag.
+    if(f.category === "raubfisch" && takenCategoryCount(c.memberId, "raubfisch", c.date, "day", excludeId) + n > 1) errors.push("Tageslimit Raubfisch überschritten (max. 1)");
+    if(f.category === "friedfisch" && takenCategoryCount(c.memberId, "friedfisch", c.date, "day", excludeId) + n > 2) errors.push("Tageslimit Friedfisch überschritten (max. 2)");
+  }
+  return {errors, warnings};
 }
 function dailyProtectedTake(memberId, date){
   return catches().filter(x => sameId(x.memberId, memberId) && x.date === date && x.status === "entnommen" && byId(fishTypes(), x.fishId)?.min).reduce((sum,x)=>sum+Number(x.count||1),0);
@@ -1786,13 +1847,17 @@ function row(c){
   const target = c.targetWaterId ? byId(waters(), c.targetWaterId) : null;
   const badge = c.status === "entnommen" ? "keep" : (c.status === "umgesetzt" ? "keep" : "release");
   const statusText = c.status === "entnommen" ? "Entnommen" : (c.status === "umgesetzt" ? `Umgesetzt nach ${target?.name || "?"}` : "Zurückgesetzt");
-  const issues = catchRuleIssues(c);
+  const ruleCheck = catchRuleIssues(c, c.id);
+  const issues = ruleCheck.errors;
+  const warnings = ruleCheck.warnings;
   const showIssues = role() !== "mitglied";
+  const rowClass = showIssues && issues.length ? "rule-bad" : (showIssues && warnings.length ? "rule-warn" : "");
+  const ruleText = showIssues ? (issues.length ? `<span class="rule-note">${issues.join("; ")}</span>` : (warnings.length ? `<span class="rule-note">${warnings.join("; ")}</span>` : `<span class="rule-ok">OK</span>`)) : "–";
   const action = catchActionHtml(c);
-  return `<tr class="${showIssues && issues.length ? "rule-bad" : ""}">
+  return `<tr class="${rowClass}">
     <td>${formatDate(c.date)}</td><td class="nowrap">${m?.nr || ""} · ${m?.name || ""}</td><td>${w?.name || ""}</td><td>${f?.name || ""}</td>
     <td>${c.length ? c.length + " cm" : "–"}</td><td>${c.weight ? c.weight + " g" : "–"}</td><td>${c.count || 1}</td>
-    <td><span class="badge ${badge}">${statusText}</span></td><td>${c.note || "–"}</td><td>${showIssues && issues.length ? `<span class="rule-note">${issues.join("; ")}</span>` : "–"}</td><td>${action}</td>
+    <td><span class="badge ${badge}">${statusText}</span></td><td>${c.note || "–"}</td><td>${ruleText}</td><td>${action}</td>
   </tr>`;
 }
 function editCatch(id){
@@ -1893,28 +1958,6 @@ function fishColor(fishId){
   if(fish?.color) return fish.color;
   const index = Math.max(0, list.findIndex(f => sameId(f.id, fishId)));
   return paletteColor(index);
-}
-
-function fishCategoryLabel(value){
-  return value === "raubfisch" ? "Raubfisch" : (value === "friedfisch" ? "Friedfisch" : "Sonstige");
-}
-function limitText(value, label){
-  const n = Number(value || 0);
-  return n > 0 ? `${n} / ${label}` : "";
-}
-function fishRuleSummary(f){
-  const parts = [];
-  parts.push(fishCategoryLabel(f.category || "friedfisch"));
-  if(f.min) parts.push(`Mindestmaß ${f.min} cm`);
-  if(f.closed_from && f.closed_to) parts.push(`Schonzeit ${formatDate(f.closed_from)} bis ${formatDate(f.closed_to)}`);
-  if(f.take_allowed === false || f.take_allowed === "nein") parts.push("Entnahme gesperrt");
-  const limits = [limitText(f.limit_day,"Tag"), limitText(f.limit_week,"Woche"), limitText(f.limit_month,"Monat"), limitText(f.limit_year,"Jahr")].filter(Boolean);
-  if(limits.length) parts.push(`Limit ${limits.join(", ")}`);
-  return parts.join(" · ") || "Keine Sonderregeln";
-}
-function nullableNumberFromInput(id){
-  const raw = document.getElementById(id)?.value;
-  return raw === "" || raw == null ? null : Number(raw);
 }
 
 function caughtBalanceRows(list){
@@ -2380,8 +2423,8 @@ function renderAdmin(){
   document.getElementById("membersTable").innerHTML = memRows.length ? adminTable(["Nr.","Name","Status","Rolle","Aktion"], memRows) : `<div class="empty">Keine Mitglieder passend zum Filter.</div>`;
   const watRows = waters().map(w => `<tr><td><span class="color-swatch" style="background:${waterColor(w.id)}"></span></td><td>${w.name}</td><td>${w.type}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editWater(${jsId(w.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteWater(${jsId(w.id)})">Löschen</button></div></td></tr>`);
   document.getElementById("watersTable").innerHTML = adminTable(["Farbe","Name","Typ","Aktion"], watRows);
-  const fishRows = fishTypes().map(f => `<tr><td><span class="color-swatch" style="background:${fishColor(f.id)}"></span></td><td>${f.name}</td><td>${f.min ? f.min + " cm" : "offen"}</td><td>${fishCategoryLabel(f.category || "friedfisch")}</td><td><span class="rule-summary">${fishRuleSummary(f)}</span></td><td><div class="actions"><button class="btn-light btn-small" onclick="editFish(${jsId(f.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteFish(${jsId(f.id)})">Löschen</button></div></td></tr>`);
-  document.getElementById("fishTable").innerHTML = adminTable(["Farbe","Name","Mindestmaß","Kategorie","Regeln","Aktion"], fishRows);
+  const fishRows = fishTypes().map(f => `<tr><td><span class="color-swatch" style="background:${fishColor(f.id)}"></span></td><td>${f.name}</td><td>${categoryLabel(f.category)}</td><td>${f.min ? f.min + " cm" : "offen"}</td><td>${f.closed_from && f.closed_to ? formatDate(f.closed_from) + " bis " + formatDate(f.closed_to) : "–"}</td><td>${[f.max_per_day ? "Tag " + f.max_per_day : "", f.max_per_week ? "Woche " + f.max_per_week : "", f.max_per_month ? "Monat " + f.max_per_month : "", f.max_per_year ? "Jahr " + f.max_per_year : ""].filter(Boolean).join(" / ") || "–"}</td><td>${f.take_allowed === false ? "Nein" : "Ja"}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editFish(${jsId(f.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteFish(${jsId(f.id)})">Löschen</button></div></td></tr>`);
+  document.getElementById("fishTable").innerHTML = adminTable(["Farbe","Name","Kategorie","Mindestmaß","Schonzeit","Limits","Entnahme","Aktion"], fishRows);
   renderStockMovements();
 }
 
@@ -2491,71 +2534,71 @@ async function saveFish(){
   const minRaw = document.getElementById("fishMin").value;
   const min = minRaw === "" ? null : Number(minRaw);
   const color = document.getElementById("fishColor").value;
-  const payload = {
-    name,
-    min_size_cm:min,
-    color,
-    category:document.getElementById("fishCategory").value,
-    closed_from:document.getElementById("fishClosedFrom").value || null,
-    closed_to:document.getElementById("fishClosedTo").value || null,
-    limit_day:nullableNumberFromInput("fishLimitDay"),
-    limit_week:nullableNumberFromInput("fishLimitWeek"),
-    limit_month:nullableNumberFromInput("fishLimitMonth"),
-    limit_year:nullableNumberFromInput("fishLimitYear"),
-    take_allowed:document.getElementById("fishTakeAllowed").value === "ja"
-  };
+  const category = document.getElementById("fishCategory").value;
+  const closedFrom = document.getElementById("fishClosedFrom").value || null;
+  const closedTo = document.getElementById("fishClosedTo").value || null;
+  const maxDay = numberOrNull(document.getElementById("fishMaxDay").value);
+  const maxWeek = numberOrNull(document.getElementById("fishMaxWeek").value);
+  const maxMonth = numberOrNull(document.getElementById("fishMaxMonth").value);
+  const maxYear = numberOrNull(document.getElementById("fishMaxYear").value);
+  const takeAllowed = document.getElementById("fishTakeAllowed").value === "true";
   if(!name){ notice("adminNotice","error","Bitte eine Fischart eintragen."); return; }
+  if((closedFrom && !closedTo) || (!closedFrom && closedTo)){ notice("adminNotice","error","Bitte Schonzeit von und Schonzeit bis gemeinsam eintragen oder beide leer lassen."); return; }
   try{
-    let row;
-    if(supabaseConfigured()){
-      row = normalizeFish(await saveSimpleRow("fish_types", payload, id));
-    } else {
-      row = normalizeFish({...payload, id:id || nextId(ensureState().fish)});
-    }
+    const row = normalizeFish(await saveSimpleRow("fish_types", {
+      name,
+      min_size_cm:min,
+      color,
+      category,
+      closed_from:closedFrom,
+      closed_to:closedTo,
+      max_per_day:maxDay,
+      max_per_week:maxWeek,
+      max_per_month:maxMonth,
+      max_per_year:maxYear,
+      take_allowed:takeAllowed
+    }, id));
     let list = ensureState().fish;
     if(id){ list = list.map(f => sameId(f.id, id) ? row : f); notice("adminNotice","ok",`Fischart „${name}“ wurde bearbeitet.`); }
     else { list.push(row); notice("adminNotice","ok",`Fischart „${name}“ wurde hinzugefügt.`); }
     saveFishTypes(list);
     cancelFishEdit(false);
     renderAll();
-  }catch(err){
-    notice("adminNotice","error","Fischart konnte nicht gespeichert werden: " + err.message + " Falls Supabase neue Spalten noch nicht kennt, bitte zuerst das SQL Update einspielen.");
-  }
+  }catch(err){ notice("adminNotice","error","Fischart konnte nicht gespeichert werden: " + err.message); }
 }
 
 function editFish(id){
   const f = byId(fishTypes(),id); if(!f) return;
   document.getElementById("fishEditId").value = f.id;
   document.getElementById("fishName").value = f.name;
-  document.getElementById("fishCategory").value = f.category || "friedfisch";
+  document.getElementById("fishCategory").value = f.category || "sonstige";
   document.getElementById("fishMin").value = f.min ?? "";
   document.getElementById("fishClosedFrom").value = f.closed_from || "";
   document.getElementById("fishClosedTo").value = f.closed_to || "";
-  document.getElementById("fishLimitDay").value = f.limit_day ?? "";
-  document.getElementById("fishLimitWeek").value = f.limit_week ?? "";
-  document.getElementById("fishLimitMonth").value = f.limit_month ?? "";
-  document.getElementById("fishLimitYear").value = f.limit_year ?? "";
-  document.getElementById("fishTakeAllowed").value = (f.take_allowed === false || f.take_allowed === "nein") ? "nein" : "ja";
+  document.getElementById("fishMaxDay").value = f.max_per_day ?? "";
+  document.getElementById("fishMaxWeek").value = f.max_per_week ?? "";
+  document.getElementById("fishMaxMonth").value = f.max_per_month ?? "";
+  document.getElementById("fishMaxYear").value = f.max_per_year ?? "";
+  document.getElementById("fishTakeAllowed").value = String(f.take_allowed !== false);
   document.getElementById("fishColor").value = fishColor(f.id);
   document.getElementById("fishFormTitle").textContent = "Fischart bearbeiten";
 }
 function cancelFishEdit(clear=true){
   document.getElementById("fishEditId").value = "";
   document.getElementById("fishName").value = "";
-  document.getElementById("fishCategory").value = "friedfisch";
+  document.getElementById("fishCategory").value = "sonstige";
   document.getElementById("fishMin").value = "";
   document.getElementById("fishClosedFrom").value = "";
   document.getElementById("fishClosedTo").value = "";
-  document.getElementById("fishLimitDay").value = "";
-  document.getElementById("fishLimitWeek").value = "";
-  document.getElementById("fishLimitMonth").value = "";
-  document.getElementById("fishLimitYear").value = "";
-  document.getElementById("fishTakeAllowed").value = "ja";
+  document.getElementById("fishMaxDay").value = "";
+  document.getElementById("fishMaxWeek").value = "";
+  document.getElementById("fishMaxMonth").value = "";
+  document.getElementById("fishMaxYear").value = "";
+  document.getElementById("fishTakeAllowed").value = "true";
   document.getElementById("fishColor").value = "#8fcfbd";
   document.getElementById("fishFormTitle").textContent = "Fischart hinzufügen";
   if(clear) clearNotice("adminNotice");
 }
-
 
 async function deleteFish(id){
   if(catches().some(c => sameId(c.fishId, id))){
