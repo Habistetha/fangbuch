@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
@@ -177,7 +177,7 @@
     .stock-group{border:1px solid var(--line);border-radius:16px;background:white;overflow:hidden;border-top:6px solid var(--group-color,#b9dacf)}
     .stock-group h4{margin:0;padding:12px 14px;background:color-mix(in srgb,var(--group-color,#b9dacf) 18%,white);color:var(--green-dark)}
     .tinted-row td{background:color-mix(in srgb,var(--row-color,#b9dacf) 10%,white)}
-    .member-filters{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;margin-bottom:12px}
+    .member-filters{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px}
     .role-admin-tools{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
     .rule-bad td{background:#fff2f1;color:#621b17}
     .rule-warn td{background:#fff8dc;color:#5d4300}
@@ -927,6 +927,16 @@
                     <input id="memberSearch" placeholder="Mitglied suchen" oninput="renderAdmin()">
                     <select id="memberStatusFilter" onchange="renderAdmin()"></select>
                     <select id="memberRoleFilter" onchange="renderAdmin()"></select>
+                    <select id="memberSort" onchange="renderAdmin()">
+                      <option value="nr_asc">Nr. aufsteigend</option>
+                      <option value="nr_desc">Nr. absteigend</option>
+                      <option value="name_asc">Name A-Z</option>
+                      <option value="name_desc">Name Z-A</option>
+                      <option value="status_asc">Status A-Z</option>
+                      <option value="status_desc">Status Z-A</option>
+                      <option value="role_asc">Rolle A-Z</option>
+                      <option value="role_desc">Rolle Z-A</option>
+                    </select>
                   </div>
                   <div id="membersTable"></div>
                   <div id="roleAdminTools" class="role-admin-tools" style="display:none">
@@ -2430,11 +2440,29 @@ function renderMemberFilterOptions(){
   keepSelect("memberStatusFilter", `<option value="">Alle Status</option><option value="aktiv">Aktiv</option><option value="neu">Neu</option><option value="ehrenmitglied">Ehrenmitglied</option><option value="pausierend">Pausierend</option>`);
   keepSelect("memberRoleFilter", `<option value="">Alle Rollen</option>` + roles().map(r => `<option value="${r.id}">${r.label}</option>`).join(""));
 }
+function memberNrSortValue(value){
+  const n = Number(String(value || "").replace(/\D/g,""));
+  return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER;
+}
+function sortMembersForAdmin(list){
+  const sort = document.getElementById("memberSort")?.value || "nr_asc";
+  const [field, direction] = sort.split("_");
+  const factor = direction === "desc" ? -1 : 1;
+  return [...list].sort((a,b) => {
+    let result = 0;
+    if(field === "nr") result = memberNrSortValue(a.nr) - memberNrSortValue(b.nr) || String(a.nr || "").localeCompare(String(b.nr || ""), "de", {numeric:true});
+    else if(field === "status") result = memberStatusLabel(a.status).localeCompare(memberStatusLabel(b.status), "de", {sensitivity:"base"});
+    else if(field === "role") result = roleLabel(a.role).localeCompare(roleLabel(b.role), "de", {sensitivity:"base"});
+    else result = (a.name || "").localeCompare(b.name || "", "de", {sensitivity:"base"});
+    return result * factor || memberNrSortValue(a.nr) - memberNrSortValue(b.nr) || (a.name || "").localeCompare(b.name || "", "de", {sensitivity:"base"});
+  });
+}
 function filteredMembersForAdmin(){
   const q = (document.getElementById("memberSearch")?.value || "").trim().toLowerCase();
   const status = document.getElementById("memberStatusFilter")?.value || "";
   const roleFilter = document.getElementById("memberRoleFilter")?.value || "";
-  return members().filter(m => (!q || `${m.nr} ${m.name}`.toLowerCase().includes(q)) && (!status || m.status === status) && (!roleFilter || m.role === roleFilter));
+  const filtered = members().filter(m => (!q || `${m.nr} ${m.name}`.toLowerCase().includes(q)) && (!status || m.status === status) && (!roleFilter || m.role === roleFilter));
+  return sortMembersForAdmin(filtered);
 }
 async function addCustomRole(){
   if(role() !== "admin"){ alert("Eigene Rollen dürfen nur Administratoren anlegen."); return; }
