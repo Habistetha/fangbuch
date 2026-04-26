@@ -1,9 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ASV_Fangbuch</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#16765b">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <style>
     :root{
       --bg:#edf7f2;
@@ -35,10 +39,10 @@
       inset:0;
       pointer-events:none;
       z-index:-1;
-      background:url("Original beschriftet.jpg") center/cover fixed;
+      background:url("hintergrund-fangbuch.jpg") center/cover fixed;
       opacity:.30;
     }
-    body.app-mode{background:#dcefe8 url("Original.jpg") center/cover fixed}
+    body.app-mode{background:#dcefe8 url("hintergrund-fangbuch.jpg") center/cover fixed}
     body.app-mode:before{display:none}
     body:not(.app-mode) .app{min-height:100vh;display:flex;flex-direction:column;justify-content:center}
     body:not(.app-mode) main{display:none}
@@ -479,7 +483,7 @@
     }
 
   
-    /* Handy Querformat und Touch Geräte v1.2 */
+    /* Handy Querformat und Touch GerÃ¤te v1.2 */
     @media (pointer: coarse) and (max-height: 560px), (max-width: 900px) and (orientation: landscape){
       body{
         overflow-x:hidden;
@@ -707,7 +711,7 @@
   <div class="app">
     <header class="hero">
       <div class="hero-inner">
-        <span class="sr-only">ASV Mellrichstadt · Digitales Fangbuch</span>
+        <span class="sr-only">ASV Mellrichstadt Â· Digitales Fangbuch</span>
       </div>
     </header>
 
@@ -730,27 +734,27 @@
       <span id="loginState" class="sr-only">Niemand</span>
       <select id="roleSelect" onchange="updateRoleView()" style="display:none">
         <option value="mitglied">Mitglied</option>
-        <option value="vorstand">Vorstand / Gewässerwart</option>
+        <option value="vorstand">Vorstand / GewÃ¤sserwart</option>
         <option value="admin" selected>Administrator</option>
       </select>
       <div class="role-card" id="passwordChangeCard" style="display:none">
-        <strong>Passwort ändern:</strong>
+        <strong>Passwort Ã¤ndern:</strong>
         <input id="oldPassword" type="password" placeholder="Aktuelles Passwort">
         <input id="newPassword" type="password" placeholder="Neues Passwort">
         <input id="newPasswordConfirm" type="password" placeholder="Neues Passwort wiederholen">
-        <button class="btn-main btn-small" onclick="changeOwnPassword()">Ändern</button>
+        <button class="btn-main btn-small" onclick="changeOwnPassword()">Ã„ndern</button>
       </div>
     </div>
 
     <div class="account-tools" id="accountTools" style="display:none">
-      <button class="account-toggle btn-small" type="button" onclick="togglePasswordChange()">Passwort ändern</button>
+      <button class="account-toggle btn-small" type="button" onclick="togglePasswordChange()">Passwort Ã¤ndern</button>
       <button id="logoutButtonMobile" class="account-toggle btn-small" type="button" onclick="logoutMember()">Abmelden</button>
     </div>
 
     <nav class="tabs" id="mainTabs">
       <button class="tab" data-tab="entry" onclick="showSection('entry')">Fang eintragen</button>
-      <button class="tab" data-tab="my" onclick="showSection('my')">Meine Fänge</button>
-      <button class="tab board" data-tab="overview" onclick="showSection('overview')">Alle Fänge</button>
+      <button class="tab" data-tab="my" onclick="showSection('my')">Meine FÃ¤nge</button>
+      <button class="tab board" data-tab="overview" onclick="showSection('overview')">Alle FÃ¤nge</button>
       <button class="tab board" data-tab="stats" onclick="showSection('stats')">Auswertung</button>
       <button class="tab board" data-tab="admin" onclick="showSection('admin')">Verwaltung</button>
     </nav>
@@ -771,7 +775,7 @@
                   <input id="datum" type="date" required>
                 </div>
                 <div class="field">
-                  <label for="gewaesser">Gewässer *</label>
+                  <label for="gewaesser">GewÃ¤sser *</label>
                   <select id="gewaesser" required></select>
                 </div>
                 <div class="field">
@@ -784,7 +788,7 @@
                   <input id="anzahl" type="number" min="1" step="1" value="1" required>
                 </div>
                 <div class="field">
-                  <label for="laenge">Länge in cm</label>
+                  <label for="laenge">LÃ¤nge in cm</label>
                   <input id="laenge" type="number" min="0" step="1" placeholder="z. B. 42">
                 </div>
                 <div class="field">
@@ -797,13 +801,13 @@
                     <input type="radio" id="entnommen" name="verbleib" value="entnommen" checked onchange="toggleTransferField()">
                     <label for="entnommen">Entnommen</label>
                     <input type="radio" id="zurueckgesetzt" name="verbleib" value="zurueckgesetzt" onchange="toggleTransferField()">
-                    <label for="zurueckgesetzt">Zurückgesetzt</label>
+                    <label for="zurueckgesetzt">ZurÃ¼ckgesetzt</label>
                     <input type="radio" id="umgesetzt" name="verbleib" value="umgesetzt" onchange="toggleTransferField()">
                     <label for="umgesetzt">Umgesetzt</label>
                   </div>
                 </div>
                 <div class="field full" id="transferTargetField" style="display:none">
-                  <label for="zielgewaesser">Zielgewässer bei Umsetzung *</label>
+                  <label for="zielgewaesser">ZielgewÃ¤sser bei Umsetzung *</label>
                   <select id="zielgewaesser"></select>
                 </div>
                 <div class="field full">
@@ -824,7 +828,7 @@
       <section id="section-my" class="section">
         <article class="card">
           <div class="card-head">
-            <h2>Meine Fänge</h2>
+            <h2>Meine FÃ¤nge</h2>
 </div>
           <div class="card-body"><div id="myCatches"></div></div>
         </article>
@@ -833,7 +837,7 @@
       <section id="section-overview" class="section">
         <article class="card">
           <div class="card-head">
-            <h2>Alle Fänge</h2>
+            <h2>Alle FÃ¤nge</h2>
 </div>
           <div class="card-body">
             <div class="filters">
@@ -844,7 +848,7 @@
               <select id="filterStatus" onchange="renderOverview()">
                 <option value="">Alle Fangarten</option>
                 <option value="entnommen">Entnommen</option>
-                <option value="zurueckgesetzt">Zurückgesetzt</option>
+                <option value="zurueckgesetzt">ZurÃ¼ckgesetzt</option>
                 <option value="umgesetzt">Umgesetzt</option>
               </select>
             </div>
@@ -865,11 +869,11 @@
                 <div id="statsStockTotals"></div>
               </div>
               <div class="panel full">
-                <h3>Gefangene Fische je Gewässer</h3>
+                <h3>Gefangene Fische je GewÃ¤sser</h3>
                 <div id="statsCaughtByWater"></div>
               </div>
               <div class="panel full">
-                <h3>Bestand je Gewässer</h3>
+                <h3>Bestand je GewÃ¤sser</h3>
                 <div id="statsStock"></div>
               </div>
             </div>
@@ -885,7 +889,7 @@
           <div class="card-body">
             <div class="admin-tabs">
               <button class="admin-tab active" data-admin="members" onclick="showAdminPanel('members')">Mitglieder verwalten</button>
-              <button class="admin-tab" data-admin="waters" onclick="showAdminPanel('waters')">Gewässer verwalten</button>
+              <button class="admin-tab" data-admin="waters" onclick="showAdminPanel('waters')">GewÃ¤sser verwalten</button>
               <button class="admin-tab" data-admin="fish" onclick="showAdminPanel('fish')">Fischarten verwalten</button>
               <button class="admin-tab" data-admin="stock" onclick="showAdminPanel('stock')">Besatz & Bestand</button>
             </div>
@@ -893,14 +897,14 @@
             <div id="adminPanelMembers" class="admin-panel">
               <div class="admin-grid">
                 <div class="panel">
-                  <h3 id="memberFormTitle">Mitglied hinzufügen</h3>
+                  <h3 id="memberFormTitle">Mitglied hinzufÃ¼gen</h3>
                   <input type="hidden" id="memberEditId">
                   <div class="field"><label>Mitgliedsnummer</label><input id="memberNr" placeholder="z. B. 004"></div><br>
                   <div class="field"><label>Name</label><input id="memberName" placeholder="z. B. Max Mustermann"></div><br>
                   <div class="field"><label>Rolle</label>
                     <select id="memberRole">
                       <option value="mitglied">Mitglied</option>
-                      <option value="vorstand">Vorstand / Gewässerwart</option>
+                      <option value="vorstand">Vorstand / GewÃ¤sserwart</option>
                       <option value="admin">Administrator</option>
                     </select>
                   </div><br>
@@ -937,25 +941,25 @@
             <div id="adminPanelWaters" class="admin-panel" style="display:none">
               <div class="admin-grid">
                 <div class="panel">
-                  <h3 id="waterFormTitle">Gewässer hinzufügen</h3>
+                  <h3 id="waterFormTitle">GewÃ¤sser hinzufÃ¼gen</h3>
                   <input type="hidden" id="waterEditId">
                   <div class="field"><label>Name</label><input id="waterName" placeholder="z. B. Teichanlage Sondheim"></div><br>
                   <div class="field"><label>Typ</label>
                     <select id="waterType">
                       <option>Teich</option>
-                      <option>Fließgewässer</option>
+                      <option>FlieÃŸgewÃ¤sser</option>
                       <option>See</option>
-                      <option>Gewässer</option>
+                      <option>GewÃ¤sser</option>
                     </select>
                   </div><br>
                   <div class="field"><label>Farbe</label><input id="waterColor" class="color-input" type="color" value="#8fcfbd"></div><br>
                   <div class="actions">
-                    <button class="btn-main" onclick="saveWater()">Gewässer speichern</button>
+                    <button class="btn-main" onclick="saveWater()">GewÃ¤sser speichern</button>
                     <button class="btn-light" onclick="cancelWaterEdit()">Abbrechen</button>
                   </div>
                 </div>
                 <div class="panel">
-                  <h3>Vorhandene Gewässer</h3>
+                  <h3>Vorhandene GewÃ¤sser</h3>
                   <div id="watersTable"></div>
                 </div>
               </div>
@@ -964,7 +968,7 @@
             <div id="adminPanelFish" class="admin-panel" style="display:none">
               <div class="admin-grid">
                 <div class="panel">
-                  <h3 id="fishFormTitle">Fischart hinzufügen</h3>
+                  <h3 id="fishFormTitle">Fischart hinzufÃ¼gen</h3>
                   <input type="hidden" id="fishEditId">
                   <div class="field"><label>Name</label><input id="fishName" placeholder="z. B. Schleie"></div><br>
                   <div class="field"><label>Kategorie</label>
@@ -974,7 +978,7 @@
                       <option value="friedfisch">Friedfisch</option>
                     </select>
                   </div><br>
-                  <div class="field"><label>Mindestmaß in cm</label><input id="fishMin" type="number" min="0" step="1" placeholder="leer lassen, falls offen"></div><br>
+                  <div class="field"><label>MindestmaÃŸ in cm</label><input id="fishMin" type="number" min="0" step="1" placeholder="leer lassen, falls offen"></div><br>
                   <div class="field"><label>Schonzeit von</label><input id="fishClosedFrom" type="text" inputmode="numeric" maxlength="5" placeholder="TT.MM"></div><br>
                   <div class="field"><label>Schonzeit bis</label><input id="fishClosedTo" type="text" inputmode="numeric" maxlength="5" placeholder="TT.MM"></div><br>
                   <div class="field"><label>Max. Entnahme pro Tag</label><input id="fishMaxDay" type="number" min="0" step="1" placeholder="leer = keine Grenze"></div><br>
@@ -1007,18 +1011,18 @@
                   <h3 id="stockFormTitle">Besatz eintragen</h3>
                   <input type="hidden" id="stockEditId">
                   <div class="field"><label>Datum</label><input id="stockDate" type="date"></div><br>
-                  <div class="field"><label>Gewässer</label><select id="stockWater"></select></div><br>
+                  <div class="field"><label>GewÃ¤sser</label><select id="stockWater"></select></div><br>
                   <div class="field"><label>Fischart</label><select id="stockFish"></select></div><br>
                   <div class="field"><label>Anzahl</label><input id="stockCount" type="number" min="1" step="1" value="1"></div><br>
                   <div class="field"><label>Art</label><select id="stockType"><option value="besatz">Besatz / Zukauf</option><option value="korrektur_plus">Korrektur plus</option><option value="korrektur_minus">Korrektur minus</option></select></div><br>
-                  <div class="field"><label>Bemerkung</label><textarea id="stockNote" placeholder="z. B. Besatz Frühjahr 2026"></textarea></div>
+                  <div class="field"><label>Bemerkung</label><textarea id="stockNote" placeholder="z. B. Besatz FrÃ¼hjahr 2026"></textarea></div>
                   <div class="actions" style="margin-top:12px">
                     <button class="btn-main" id="stockSubmitButton" onclick="saveStockMovement()">Bestand buchen</button>
                     <button class="btn-light" type="button" onclick="cancelStockEdit()">Abbrechen</button>
                   </div>
                 </div>
                 <div class="panel">
-                  <h3>Bestand je Gewässer</h3>
+                  <h3>Bestand je GewÃ¤sser</h3>
                   <div id="currentStockTable"></div>
                 </div>
               </div>
@@ -1033,7 +1037,7 @@
         </article>
       </section>
     </main>
-    <div class="footer">ASV Mellrichstadt e.V. · Digitales Fangbuch · Supabase Cloud Version v2.2</div>
+    <div class="footer">ASV Mellrichstadt e.V. Â· Digitales Fangbuch Â· Supabase Cloud Version v2.2</div>
   </div>
 
 <script>
@@ -1096,7 +1100,7 @@ const defaults = {
     {
         "id": 5,
         "nr": "005",
-        "name": "Joachim Angermüller",
+        "name": "Joachim AngermÃ¼ller",
         "role": "mitglied",
         "status": "aktiv"
     },
@@ -1201,7 +1205,7 @@ const defaults = {
     {
         "id": 20,
         "nr": "020",
-        "name": "Jan Angermüller",
+        "name": "Jan AngermÃ¼ller",
         "role": "mitglied",
         "status": "aktiv"
     },
@@ -1229,7 +1233,7 @@ const defaults = {
     {
         "id": 24,
         "nr": "024",
-        "name": "Hannes Bäuml",
+        "name": "Hannes BÃ¤uml",
         "role": "mitglied",
         "status": "aktiv"
     },
@@ -1243,7 +1247,7 @@ const defaults = {
     {
         "id": 26,
         "nr": "026",
-        "name": "Micha Bäuml",
+        "name": "Micha BÃ¤uml",
         "role": "mitglied",
         "status": "aktiv"
     },
@@ -1271,7 +1275,7 @@ const defaults = {
     {
         "id": 30,
         "nr": "030",
-        "name": "Jürgen Blümm",
+        "name": "JÃ¼rgen BlÃ¼mm",
         "role": "mitglied",
         "status": "pausierend"
     },
@@ -1285,7 +1289,7 @@ const defaults = {
     {
         "id": 32,
         "nr": "032",
-        "name": "Reinhard Krümpel",
+        "name": "Reinhard KrÃ¼mpel",
         "role": "mitglied",
         "status": "pausierend"
     },
@@ -1299,8 +1303,8 @@ const defaults = {
 ],
   waters:[
     {id:1,name:"Teichanlage Sondheim",type:"Teich"},
-    {id:2,name:"Streu",type:"Fließgewässer"},
-    {id:3,name:"Vereinsgewässer Mellrichstadt",type:"Gewässer"}
+    {id:2,name:"Streu",type:"FlieÃŸgewÃ¤sser"},
+    {id:3,name:"VereinsgewÃ¤sser Mellrichstadt",type:"GewÃ¤sser"}
   ],
   fish:[
     {id:1,name:"Karpfen",min:35,category:"friedfisch",take_allowed:true},
@@ -1312,13 +1316,13 @@ const defaults = {
   ],
   catches:[
     {id:1001,date:"2026-04-15",memberId:2,waterId:1,fishId:1,length:42,weight:1250,count:1,status:"entnommen",note:"Schuppenkarpfen",createdAt:new Date().toISOString()},
-    {id:1002,date:"2026-04-18",memberId:3,waterId:2,fishId:4,length:31,weight:"",count:1,status:"zurueckgesetzt",note:"sauber zurückgesetzt",createdAt:new Date().toISOString()},
+    {id:1002,date:"2026-04-18",memberId:3,waterId:2,fishId:4,length:31,weight:"",count:1,status:"zurueckgesetzt",note:"sauber zurÃ¼ckgesetzt",createdAt:new Date().toISOString()},
     {id:1003,date:"2026-04-22",memberId:2,waterId:1,fishId:5,length:"",weight:"",count:8,status:"zurueckgesetzt",note:"Sammelfang",createdAt:new Date().toISOString()}
   ],
   stock:[],
   roles:[
     {id:"mitglied", label:"Mitglied", system:true},
-    {id:"vorstand", label:"Vorstand / Gewässerwart", system:true},
+    {id:"vorstand", label:"Vorstand / GewÃ¤sserwart", system:true},
     {id:"admin", label:"Administrator", system:true}
   ]
 };
@@ -1528,12 +1532,12 @@ async function forgotPassword(){
     return;
   }
   const redirectTo = window.location.href.split("#")[0].split("?")[0];
-  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
   if(error){
-    alert("Passwort Zurücksetzung fehlgeschlagen: " + error.message);
+    alert("Passwort ZurÃ¼cksetzung fehlgeschlagen: " + error.message);
     return;
   }
-  alert("Wenn diese E Mail Adresse registriert ist, wurde eine Mail zum Zurücksetzen des Passworts versendet.");
+  alert("Wenn diese E Mail Adresse registriert ist, wurde eine Mail zum ZurÃ¼cksetzen des Passworts versendet.");
 }
 
 
@@ -1548,12 +1552,12 @@ async function handlePasswordRecoveryRedirect(){
     alert("Das Passwort muss mindestens 8 Zeichen haben.");
     return;
   }
-  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
   if(error){
-    alert("Passwort konnte nicht geändert werden: " + error.message);
+    alert("Passwort konnte nicht geÃ¤ndert werden: " + error.message);
     return;
   }
-  alert("Passwort wurde geändert. Du kannst dich jetzt anmelden.");
+  alert("Passwort wurde geÃ¤ndert. Du kannst dich jetzt anmelden.");
   window.location.hash = "";
 }
 
@@ -1628,15 +1632,15 @@ function showSection(name){
     return;
   }
   if(sessionMember?.mustChangePassword && name !== "start"){
-    alert("Bitte ändere zuerst dein Startpasswort.");
+    alert("Bitte Ã¤ndere zuerst dein Startpasswort.");
     return;
   }
   if((name === "overview" || name === "stats") && !hasBoardAccess()){
-    alert("Diese Ansicht ist später nur für Vorstand oder Gewässerwart gedacht.");
+    alert("Diese Ansicht ist spÃ¤ter nur fÃ¼r Vorstand oder GewÃ¤sserwart gedacht.");
     return;
   }
   if(name === "admin" && !hasBoardAccess()){
-    alert("Diese Ansicht ist später nur für Vorstand, Gewässerwart oder Administratoren gedacht.");
+    alert("Diese Ansicht ist spÃ¤ter nur fÃ¼r Vorstand, GewÃ¤sserwart oder Administratoren gedacht.");
     return;
   }
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
@@ -1689,7 +1693,7 @@ function showFishHint(){
   const f = byId(fishTypes(), document.getElementById("fischart").value);
   if(!f){ document.getElementById("fishHint").textContent = ""; return; }
   const parts = [];
-  parts.push(f.min ? `Mindestmaß: ${f.min} cm` : "Kein Mindestmaß hinterlegt");
+  parts.push(f.min ? `MindestmaÃŸ: ${f.min} cm` : "Kein MindestmaÃŸ hinterlegt");
   parts.push(`Kategorie: ${categoryLabel(f.category)}`);
   if(f.closed_from && f.closed_to) parts.push(`Schonzeit: ${formatDayMonth(f.closed_from)} bis ${formatDayMonth(f.closed_to)}`);
   if(f.take_allowed === false) parts.push("Entnahme nicht erlaubt");
@@ -1697,7 +1701,7 @@ function showFishHint(){
   if(f.max_per_week) parts.push(`max. ${f.max_per_week} pro Woche`);
   if(f.max_per_month) parts.push(`max. ${f.max_per_month} pro Monat`);
   if(f.max_per_year) parts.push(`max. ${f.max_per_year} pro Jahr`);
-  document.getElementById("fishHint").textContent = parts.join(" · ");
+  document.getElementById("fishHint").textContent = parts.join(" Â· ");
 }
 function notice(id, type, text){
   const el = document.getElementById(id);
@@ -1733,7 +1737,7 @@ document.getElementById("catchForm").addEventListener("submit", async e => {
   const errors = [], warnings = [];
   if(!data.date) errors.push("Bitte ein Datum eintragen.");
   if(!data.count || data.count < 1) errors.push("Die Anzahl muss mindestens 1 sein.");
-  if(data.status === "umgesetzt" && sameId(data.targetWaterId, data.waterId)) errors.push("Bei einer Umsetzung muss ein anderes Zielgewässer gewählt werden.");
+  if(data.status === "umgesetzt" && sameId(data.targetWaterId, data.waterId)) errors.push("Bei einer Umsetzung muss ein anderes ZielgewÃ¤sser gewÃ¤hlt werden.");
   const d = new Date(data.date); d.setHours(0,0,0,0);
   const today = new Date(); today.setHours(0,0,0,0);
   if(d > today) warnings.push("Das Fangdatum liegt in der Zukunft.");
@@ -1837,8 +1841,8 @@ function catchRuleIssues(c, excludeId=""){
   const f = byId(fishTypes(), c.fishId);
   const n = Number(c.count || 1);
   if(!f) return {errors, warnings};
-  if(c.status === "entnommen" && f?.min && c.length && Number(c.length) < Number(f.min)) errors.push(`Unter Mindestmaß (${f.min} cm)`);
-  if(c.status === "entnommen" && f.take_allowed === false) errors.push("Entnahme für diese Fischart nicht erlaubt");
+  if(c.status === "entnommen" && f?.min && c.length && Number(c.length) < Number(f.min)) errors.push(`Unter MindestmaÃŸ (${f.min} cm)`);
+  if(c.status === "entnommen" && f.take_allowed === false) errors.push("Entnahme fÃ¼r diese Fischart nicht erlaubt");
   if(c.status === "entnommen" && isInClosedSeason(c.date, f.closed_from, f.closed_to)) errors.push(`Schonzeit (${formatDayMonth(f.closed_from)} bis ${formatDayMonth(f.closed_to)})`);
   const limits = [
     ["day", f.max_per_day, "Tageslimit"],
@@ -1848,11 +1852,11 @@ function catchRuleIssues(c, excludeId=""){
   ];
   if(c.status === "entnommen"){
     limits.forEach(([period, limit, label]) => {
-      if(limit && takenCount(c.memberId, c.fishId, c.date, period, excludeId) + n > Number(limit)) errors.push(`${label} für ${f.name} überschritten (max. ${limit})`);
+      if(limit && takenCount(c.memberId, c.fishId, c.date, period, excludeId) + n > Number(limit)) errors.push(`${label} fÃ¼r ${f.name} Ã¼berschritten (max. ${limit})`);
     });
     // Vereinsregel als Startwert: maximal 1 Raubfisch und maximal 2 Friedfische pro Tag.
-    if(f.category === "raubfisch" && takenCategoryCount(c.memberId, "raubfisch", c.date, "day", excludeId) + n > 1) errors.push("Tageslimit Raubfisch überschritten (max. 1)");
-    if(f.category === "friedfisch" && takenCategoryCount(c.memberId, "friedfisch", c.date, "day", excludeId) + n > 2) errors.push("Tageslimit Friedfisch überschritten (max. 2)");
+    if(f.category === "raubfisch" && takenCategoryCount(c.memberId, "raubfisch", c.date, "day", excludeId) + n > 1) errors.push("Tageslimit Raubfisch Ã¼berschritten (max. 1)");
+    if(f.category === "friedfisch" && takenCategoryCount(c.memberId, "friedfisch", c.date, "day", excludeId) + n > 2) errors.push("Tageslimit Friedfisch Ã¼berschritten (max. 2)");
   }
   return {errors, warnings};
 }
@@ -1876,27 +1880,27 @@ function canDeleteCatch(c){
 function catchActionHtml(c){
   const editButton = canEditCatch(c) ? `<button class="btn-light btn-small" onclick="editCatch(${jsId(c.id)})">Bearbeiten</button>` : "";
   const deleteButton = canDeleteCatch(c)
-    ? `<button class="btn-danger btn-small" onclick="deleteCatch(${jsId(c.id)})">Löschen</button>`
-    : (sameId(c.memberId, currentMemberId()) ? `<button class="btn-danger btn-small" disabled title="Mitglieder können eigene Einträge nur binnen 24 Stunden löschen.">Löschen</button>` : "");
+    ? `<button class="btn-danger btn-small" onclick="deleteCatch(${jsId(c.id)})">LÃ¶schen</button>`
+    : (sameId(c.memberId, currentMemberId()) ? `<button class="btn-danger btn-small" disabled title="Mitglieder kÃ¶nnen eigene EintrÃ¤ge nur binnen 24 Stunden lÃ¶schen.">LÃ¶schen</button>` : "");
   const buttons = [editButton, deleteButton].filter(Boolean).join("");
-  return buttons ? `<div class="actions catch-actions">${buttons}</div>` : "–";
+  return buttons ? `<div class="actions catch-actions">${buttons}</div>` : "â€“";
 }
 function row(c){
   const m = byId(members(), c.memberId), w = byId(waters(), c.waterId), f = byId(fishTypes(), c.fishId);
   const target = c.targetWaterId ? byId(waters(), c.targetWaterId) : null;
   const badge = c.status === "entnommen" ? "keep" : (c.status === "umgesetzt" ? "keep" : "release");
-  const statusText = c.status === "entnommen" ? "Entnommen" : (c.status === "umgesetzt" ? `Umgesetzt nach ${target?.name || "?"}` : "Zurückgesetzt");
+  const statusText = c.status === "entnommen" ? "Entnommen" : (c.status === "umgesetzt" ? `Umgesetzt nach ${target?.name || "?"}` : "ZurÃ¼ckgesetzt");
   const ruleCheck = catchRuleIssues(c, c.id);
   const issues = ruleCheck.errors;
   const warnings = ruleCheck.warnings;
   const showIssues = role() !== "mitglied";
   const rowClass = showIssues && issues.length ? "rule-bad" : (showIssues && warnings.length ? "rule-warn" : "");
-  const ruleText = showIssues ? (issues.length ? `<span class="rule-note">${issues.join("; ")}</span>` : (warnings.length ? `<span class="rule-note">${warnings.join("; ")}</span>` : `<span class="rule-ok">OK</span>`)) : "–";
+  const ruleText = showIssues ? (issues.length ? `<span class="rule-note">${issues.join("; ")}</span>` : (warnings.length ? `<span class="rule-note">${warnings.join("; ")}</span>` : `<span class="rule-ok">OK</span>`)) : "â€“";
   const action = catchActionHtml(c);
   return `<tr class="${rowClass}">
-    <td>${formatDate(c.date)}</td><td class="nowrap">${m?.nr || ""} · ${m?.name || ""}</td><td>${w?.name || ""}</td><td>${f?.name || ""}</td>
-    <td>${c.length ? c.length + " cm" : "–"}</td><td>${c.weight ? c.weight + " g" : "–"}</td><td>${c.count || 1}</td>
-    <td><span class="badge ${badge}">${statusText}</span></td><td>${c.note || "–"}</td><td>${ruleText}</td><td>${action}</td>
+    <td>${formatDate(c.date)}</td><td class="nowrap">${m?.nr || ""} Â· ${m?.name || ""}</td><td>${w?.name || ""}</td><td>${f?.name || ""}</td>
+    <td>${c.length ? c.length + " cm" : "â€“"}</td><td>${c.weight ? c.weight + " g" : "â€“"}</td><td>${c.count || 1}</td>
+    <td><span class="badge ${badge}">${statusText}</span></td><td>${c.note || "â€“"}</td><td>${ruleText}</td><td>${action}</td>
   </tr>`;
 }
 function editCatch(id){
@@ -1920,21 +1924,21 @@ function editCatch(id){
 }
 async function deleteCatch(id){
   const c = byId(catches(), id);
-  if(!canDeleteCatch(c)){ alert("Dieser Fang kann nicht mehr gelöscht werden."); return; }
-  if(!confirm("Fang wirklich löschen?")) return;
+  if(!canDeleteCatch(c)){ alert("Dieser Fang kann nicht mehr gelÃ¶scht werden."); return; }
+  if(!confirm("Fang wirklich lÃ¶schen?")) return;
   try{
     await deleteCatchCloud(id);
     saveCatches(catches().filter(item => !sameId(item.id, id)));
     if(sameId(document.getElementById("catchEditId").value, id)) resetCatchForm();
     renderAll();
   }catch(err){
-    alert("Löschen fehlgeschlagen: " + err.message);
+    alert("LÃ¶schen fehlgeschlagen: " + err.message);
   }
 }
 function renderTable(id, list){
   const el = document.getElementById(id);
-  if(!list.length){ el.innerHTML = `<div class="empty">Noch keine passenden Fänge vorhanden.</div>`; return; }
-  el.innerHTML = `<div class="table-wrap wide-table catch-table"><table><thead><tr><th>Datum</th><th>Mitglied</th><th>Gewässer</th><th>Fischart</th><th>Länge</th><th>Gewicht</th><th>Anzahl</th><th>Fangart</th><th>Bemerkung</th><th>Regelprüfung</th><th>Aktion</th></tr></thead><tbody>${list.map(row).join("")}</tbody></table></div>`;
+  if(!list.length){ el.innerHTML = `<div class="empty">Noch keine passenden FÃ¤nge vorhanden.</div>`; return; }
+  el.innerHTML = `<div class="table-wrap wide-table catch-table"><table><thead><tr><th>Datum</th><th>Mitglied</th><th>GewÃ¤sser</th><th>Fischart</th><th>LÃ¤nge</th><th>Gewicht</th><th>Anzahl</th><th>Fangart</th><th>Bemerkung</th><th>RegelprÃ¼fung</th><th>Aktion</th></tr></thead><tbody>${list.map(row).join("")}</tbody></table></div>`;
 }
 function renderMyCatches(){
   renderTable("myCatches", catches().filter(c => sameId(c.memberId, currentMemberId())).sort((a,b) => new Date(b.date) - new Date(a.date)));
@@ -1945,9 +1949,9 @@ function renderFilterOptions(){
   const current = new Date().getFullYear();
   if(!years.includes(current)) years.unshift(current);
   keepSelect("filterYear", `<option value="">Alle Jahre</option>` + years.map(y => `<option value="${y}">${y}</option>`).join(""));
-  keepSelect("filterWater", `<option value="">Alle Gewässer</option>` + waters().map(w => `<option value="${w.id}">${w.name}</option>`).join(""));
+  keepSelect("filterWater", `<option value="">Alle GewÃ¤sser</option>` + waters().map(w => `<option value="${w.id}">${w.name}</option>`).join(""));
   keepSelect("filterFish", `<option value="">Alle Fischarten</option>` + fishTypes().map(f => `<option value="${f.id}">${f.name}</option>`).join(""));
-  keepSelect("filterMember", `<option value="">Alle Mitglieder</option>` + members().map(m => `<option value="${m.id}">${m.nr} · ${m.name}</option>`).join(""));
+  keepSelect("filterMember", `<option value="">Alle Mitglieder</option>` + members().map(m => `<option value="${m.id}">${m.nr} Â· ${m.name}</option>`).join(""));
 }
 function keepSelect(id, html){
   const el = document.getElementById(id);
@@ -1970,13 +1974,13 @@ function statHtml(list){
   const total = list.reduce((s,c)=>s+Number(c.count||1),0);
   const ent = list.filter(c=>c.status==="entnommen").reduce((s,c)=>s+Number(c.count||1),0);
   const rel = list.filter(c=>c.status==="zurueckgesetzt").reduce((s,c)=>s+Number(c.count||1),0);
-  return `<div class="stat"><strong>${total}</strong><span>Fische gesamt</span></div><div class="stat"><strong>${ent}</strong><span>Entnommen</span></div><div class="stat"><strong>${rel}</strong><span>Zurückgesetzt</span></div><div class="stat"><strong>${new Set(list.map(c=>c.fishId)).size}</strong><span>Fischarten</span></div><div class="stat"><strong>${new Set(list.map(c=>c.waterId)).size}</strong><span>Gewässer</span></div>`;
+  return `<div class="stat"><strong>${total}</strong><span>Fische gesamt</span></div><div class="stat"><strong>${ent}</strong><span>Entnommen</span></div><div class="stat"><strong>${rel}</strong><span>ZurÃ¼ckgesetzt</span></div><div class="stat"><strong>${new Set(list.map(c=>c.fishId)).size}</strong><span>Fischarten</span></div><div class="stat"><strong>${new Set(list.map(c=>c.waterId)).size}</strong><span>GewÃ¤sser</span></div>`;
 }
 function aggregate(list, source, key){
   const map = new Map();
   list.forEach(c => map.set(c[key], (map.get(c[key]) || 0) + Number(c.count || 1)));
   const rows = [...map.entries()].map(([id,n]) => [byId(source,id)?.name || id, n]).sort((a,b)=>b[1]-a[1]);
-  return rows.length ? "<p class='hint'>Gezählt werden hier eingetragene Fangmeldungen, nicht der verbleibende Bestand.</p><ul>" + rows.map(r => `<li>${r[0]}: <strong>${r[1]}</strong></li>`).join("") + "</ul>" : "<p class='hint'>Keine Daten vorhanden.</p>";
+  return rows.length ? "<p class='hint'>GezÃ¤hlt werden hier eingetragene Fangmeldungen, nicht der verbleibende Bestand.</p><ul>" + rows.map(r => `<li>${r[0]}: <strong>${r[1]}</strong></li>`).join("") + "</ul>" : "<p class='hint'>Keine Daten vorhanden.</p>";
 }
 
 
@@ -2022,7 +2026,7 @@ function renderFishCountGroups(id, rows, countLabel="Anzahl"){
   rows.forEach(r => { if(!grouped.has(r.waterId)) grouped.set(r.waterId, []); grouped.get(r.waterId).push(r); });
   const allWaters = waters();
   if(!allWaters.length){ el.innerHTML = `<div class="empty">Noch keine Daten vorhanden.</div>`; return; }
-  el.innerHTML = `<div class="stock-groups">${allWaters.map(water => { const items = grouped.get(water.id) || []; return `<div class="stock-group" style="--group-color:${waterColor(water.id)}"><h4>${water.name}</h4>${items.length ? `<div class="table-wrap stock-table"><table><thead><tr><th>Fischart</th><th>${countLabel}</th></tr></thead><tbody>${items.map(r => `<tr class="tinted-row" style="--row-color:${fishColor(r.fishId)}"><td>${byId(fishTypes(), r.fishId)?.name || ""}</td><td>${r.count}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty">Keine Einträge</div>`}</div>`; }).join("")}</div>`;
+  el.innerHTML = `<div class="stock-groups">${allWaters.map(water => { const items = grouped.get(water.id) || []; return `<div class="stock-group" style="--group-color:${waterColor(water.id)}"><h4>${water.name}</h4>${items.length ? `<div class="table-wrap stock-table"><table><thead><tr><th>Fischart</th><th>${countLabel}</th></tr></thead><tbody>${items.map(r => `<tr class="tinted-row" style="--row-color:${fishColor(r.fishId)}"><td>${byId(fishTypes(), r.fishId)?.name || ""}</td><td>${r.count}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty">Keine EintrÃ¤ge</div>`}</div>`; }).join("")}</div>`;
 }
 
 function renderStats(){
@@ -2068,12 +2072,12 @@ function seedDemoStockData(){
   });
   saveStockMovements(stockMovements().concat(stock));
   const c = catches();
-  if(!c.some(x => x.note === "Fiktive Test-Entnahme" || x.note === "Fiktive Test-Umsetzung" || x.note === "Fiktive Test-Rücksetzung")){
+  if(!c.some(x => x.note === "Fiktive Test-Entnahme" || x.note === "Fiktive Test-Umsetzung" || x.note === "Fiktive Test-RÃ¼cksetzung")){
     const w1 = wat[0], w2 = wat[1] || wat[0], w3 = wat[2] || wat[0];
     c.unshift(
       {id:Date.now()+101,date:"2026-04-25",memberId:1,waterId:w1.id,fishId:fishByName.karpfen.id,length:52,weight:2100,count:2,status:"entnommen",targetWaterId:null,note:"Fiktive Test-Entnahme",createdAt:new Date().toISOString()},
       {id:Date.now()+102,date:"2026-04-25",memberId:1,waterId:w1.id,fishId:fishByName.karpfen.id,length:68,weight:5200,count:1,status:"umgesetzt",targetWaterId:w2.id,note:"Fiktive Test-Umsetzung",createdAt:new Date().toISOString()},
-      {id:Date.now()+103,date:"2026-04-25",memberId:1,waterId:w3.id,fishId:fishByName.hecht.id,length:64,weight:1800,count:1,status:"zurueckgesetzt",targetWaterId:null,note:"Fiktive Test-Rücksetzung",createdAt:new Date().toISOString()},
+      {id:Date.now()+103,date:"2026-04-25",memberId:1,waterId:w3.id,fishId:fishByName.hecht.id,length:64,weight:1800,count:1,status:"zurueckgesetzt",targetWaterId:null,note:"Fiktive Test-RÃ¼cksetzung",createdAt:new Date().toISOString()},
       {id:Date.now()+104,date:"2026-04-25",memberId:1,waterId:w2.id,fishId:fishByName.zander.id,length:55,weight:1400,count:1,status:"entnommen",targetWaterId:null,note:"Fiktive Test-Entnahme",createdAt:new Date().toISOString()}
     );
     saveCatches(c);
@@ -2135,10 +2139,10 @@ function renderStockMovements(){
   const el = document.getElementById("stockTable");
   if(!el) return;
   if(!rows.length){ el.innerHTML = `<div class="empty">Noch kein Besatz eingetragen.</div>`; return; }
-  el.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Datum</th><th>Art</th><th>Gewässer</th><th>Fischart</th><th>Anzahl</th><th>Bemerkung</th><th>Aktion</th></tr></thead><tbody>${rows.map(m => `<tr><td>${formatDate(m.date)}</td><td>${stockTypeLabel(m.type)}</td><td>${byId(waters(), m.waterId)?.name || ""}</td><td>${byId(fishTypes(), m.fishId)?.name || ""}</td><td>${m.count}</td><td>${m.note || "–"}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editStockMovement(${jsId(m.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteStockMovement(${jsId(m.id)})">Löschen</button></div></td></tr>`).join("")}</tbody></table></div>`;
+  el.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Datum</th><th>Art</th><th>GewÃ¤sser</th><th>Fischart</th><th>Anzahl</th><th>Bemerkung</th><th>Aktion</th></tr></thead><tbody>${rows.map(m => `<tr><td>${formatDate(m.date)}</td><td>${stockTypeLabel(m.type)}</td><td>${byId(waters(), m.waterId)?.name || ""}</td><td>${byId(fishTypes(), m.fishId)?.name || ""}</td><td>${m.count}</td><td>${m.note || "â€“"}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editStockMovement(${jsId(m.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteStockMovement(${jsId(m.id)})">LÃ¶schen</button></div></td></tr>`).join("")}</tbody></table></div>`;
 }
 async function saveStockMovement(){
-  if(role() === "mitglied"){ alert("Bestände dürfen nur Vorstand, Gewässerwart oder Administrator pflegen."); return; }
+  if(role() === "mitglied"){ alert("BestÃ¤nde dÃ¼rfen nur Vorstand, GewÃ¤sserwart oder Administrator pflegen."); return; }
   const editId = document.getElementById("stockEditId")?.value || "";
   const date = document.getElementById("stockDate").value;
   const count = Number(document.getElementById("stockCount").value);
@@ -2170,7 +2174,7 @@ async function saveStockMovement(){
   }
 }
 function editStockMovement(id){
-  if(role() === "mitglied"){ alert("Bestände dürfen nur Vorstand, Gewässerwart oder Administrator pflegen."); return; }
+  if(role() === "mitglied"){ alert("BestÃ¤nde dÃ¼rfen nur Vorstand, GewÃ¤sserwart oder Administrator pflegen."); return; }
   const m = byId(stockMovements(), id);
   if(!m) return;
   document.getElementById("stockEditId").value = m.id;
@@ -2197,16 +2201,16 @@ function cancelStockEdit(clear=true){
   if(clear) clearNotice("adminNotice");
 }
 async function deleteStockMovement(id){
-  if(role() === "mitglied"){ alert("Bestände dürfen nur Vorstand, Gewässerwart oder Administrator pflegen."); return; }
-  if(!confirm("Bestandsbewegung wirklich löschen?")) return;
+  if(role() === "mitglied"){ alert("BestÃ¤nde dÃ¼rfen nur Vorstand, GewÃ¤sserwart oder Administrator pflegen."); return; }
+  if(!confirm("Bestandsbewegung wirklich lÃ¶schen?")) return;
   try{
     await deleteSimpleRow("stock_movements", id);
     saveStockMovements(stockMovements().filter(m => !sameId(m.id, id)));
     if(sameId(document.getElementById("stockEditId")?.value, id)) cancelStockEdit(false);
     renderAll();
-    notice("adminNotice","ok","Bestandsbewegung wurde gelöscht.");
+    notice("adminNotice","ok","Bestandsbewegung wurde gelÃ¶scht.");
   }catch(err){
-    notice("adminNotice","error","Bestandsbewegung konnte nicht gelöscht werden: " + err.message);
+    notice("adminNotice","error","Bestandsbewegung konnte nicht gelÃ¶scht werden: " + err.message);
   }
 }
 
@@ -2232,7 +2236,7 @@ function roleOptions(selected="mitglied"){
   return roles().map(r => `<option value="${r.id}" ${r.id === selected ? "selected" : ""}>${r.label}</option>`).join("");
 }
 function slugRole(label){
-  return label.toLowerCase().trim().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"") || `rolle_${Date.now()}`;
+  return label.toLowerCase().trim().replace(/Ã¤/g,"ae").replace(/Ã¶/g,"oe").replace(/Ã¼/g,"ue").replace(/ÃŸ/g,"ss").replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"") || `rolle_${Date.now()}`;
 }
 function defaultPasswordForMember(member){
   return (member?.name || "").replace(/\s+/g, "");
@@ -2276,7 +2280,7 @@ function handleLoginKey(event){
 async function registerMember(){
   const email = document.getElementById("loginEmail")?.value.trim();
   const password = document.getElementById("loginPassword").value;
-  if(!email || !password){ alert("Bitte E-Mail und gewünschtes Passwort eingeben."); return; }
+  if(!email || !password){ alert("Bitte E-Mail und gewÃ¼nschtes Passwort eingeben."); return; }
   if(password.length < 8){ alert("Bitte ein Passwort mit mindestens 8 Zeichen verwenden."); return; }
   if(!supabaseConfigured()){
     alert("Bitte zuerst SUPABASE_URL und SUPABASE_ANON_KEY in der HTML Datei eintragen.");
@@ -2292,7 +2296,7 @@ async function registerMember(){
     dbError(error);
     document.getElementById("loginPassword").value = "";
     if(data?.user && data?.session){
-      alert("Erstzugang wurde erstellt. Du bist angemeldet. Falls das Mitgliedsprofil nicht sofort lädt, bitte einmal abmelden und wieder anmelden.");
+      alert("Erstzugang wurde erstellt. Du bist angemeldet. Falls das Mitgliedsprofil nicht sofort lÃ¤dt, bitte einmal abmelden und wieder anmelden.");
       currentAuthUser = data.user;
       await loadCloudData();
       const member = members().find(m => m.auth_user_id === data.user.id);
@@ -2303,7 +2307,7 @@ async function registerMember(){
       }
       return;
     }
-    alert("Erstzugang wurde angelegt. Bitte prüfe deine E-Mails und bestätige den Supabase Link. Danach kannst du dich mit E-Mail und Passwort anmelden.");
+    alert("Erstzugang wurde angelegt. Bitte prÃ¼fe deine E-Mails und bestÃ¤tige den Supabase Link. Danach kannst du dich mit E-Mail und Passwort anmelden.");
   }catch(err){
     alert("Erstzugang konnte nicht erstellt werden: " + err.message);
   }
@@ -2368,7 +2372,7 @@ function applySessionView(){
     document.getElementById("memberSelect").value = member.id;
     if(document.getElementById("loginEmail") && currentAuthUser?.email) document.getElementById("loginEmail").value = currentAuthUser.email;
     document.getElementById("roleSelect").value = member.role || "mitglied";
-    loginState.textContent = `${member.nr} · ${member.name} · ${roleLabel(member.role)}`;
+    loginState.textContent = `${member.nr} Â· ${member.name} Â· ${roleLabel(member.role)}`;
     passwordCard.style.display = "";
     passwordCard.classList.add("collapsed");
     passwordCard.classList.remove("expanded");
@@ -2396,9 +2400,9 @@ async function changeOwnPassword(){
   const oldPassword = document.getElementById("oldPassword").value;
   const newPassword = document.getElementById("newPassword").value;
   const confirmPassword = document.getElementById("newPasswordConfirm").value;
-  if(!oldPassword || !newPassword || !confirmPassword){ alert("Bitte alle Passwortfelder ausfüllen."); return; }
+  if(!oldPassword || !newPassword || !confirmPassword){ alert("Bitte alle Passwortfelder ausfÃ¼llen."); return; }
   if(newPassword.length < 8){ alert("Das neue Passwort sollte mindestens 8 Zeichen haben."); return; }
-  if(newPassword !== confirmPassword){ alert("Die neuen Passwörter stimmen nicht überein."); return; }
+  if(newPassword !== confirmPassword){ alert("Die neuen PasswÃ¶rter stimmen nicht Ã¼berein."); return; }
   if(!supabaseConfigured()){ alert("Supabase ist noch nicht konfiguriert."); return; }
   try{
     const email = currentAuthUser?.email || document.getElementById("loginEmail")?.value;
@@ -2414,9 +2418,9 @@ async function changeOwnPassword(){
     document.getElementById("oldPassword").value = "";
     document.getElementById("newPassword").value = "";
     document.getElementById("newPasswordConfirm").value = "";
-    alert("Passwort wurde geändert.");
+    alert("Passwort wurde geÃ¤ndert.");
   }catch(err){
-    alert("Passwortänderung fehlgeschlagen: " + err.message);
+    alert("PasswortÃ¤nderung fehlgeschlagen: " + err.message);
   }
 }
 function renderMemberFilterOptions(){
@@ -2433,7 +2437,7 @@ function filteredMembersForAdmin(){
   return members().filter(m => (!q || `${m.nr} ${m.name}`.toLowerCase().includes(q)) && (!status || m.status === status) && (!roleFilter || m.role === roleFilter));
 }
 async function addCustomRole(){
-  if(role() !== "admin"){ alert("Eigene Rollen dürfen nur Administratoren anlegen."); return; }
+  if(role() !== "admin"){ alert("Eigene Rollen dÃ¼rfen nur Administratoren anlegen."); return; }
   const input = document.getElementById("newRoleName");
   const label = input.value.trim();
   if(!label){ alert("Bitte Rollennamen eintragen."); return; }
@@ -2458,12 +2462,12 @@ function renderCustomRoles(){
 function renderAdmin(){
   renderMemberFilterOptions();
   renderCustomRoles();
-  const memRows = filteredMembersForAdmin().map(m => `<tr><td>${m.nr}</td><td>${m.name}</td><td>${memberStatusLabel(m.status)}</td><td>${roleLabel(m.role)}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editMember(${jsId(m.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteMember(${jsId(m.id)})">Löschen</button></div></td></tr>`);
+  const memRows = filteredMembersForAdmin().map(m => `<tr><td>${m.nr}</td><td>${m.name}</td><td>${memberStatusLabel(m.status)}</td><td>${roleLabel(m.role)}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editMember(${jsId(m.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteMember(${jsId(m.id)})">LÃ¶schen</button></div></td></tr>`);
   document.getElementById("membersTable").innerHTML = memRows.length ? adminTable(["Nr.","Name","Status","Rolle","Aktion"], memRows) : `<div class="empty">Keine Mitglieder passend zum Filter.</div>`;
-  const watRows = waters().map(w => `<tr><td><span class="color-swatch" style="background:${waterColor(w.id)}"></span></td><td>${w.name}</td><td>${w.type}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editWater(${jsId(w.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteWater(${jsId(w.id)})">Löschen</button></div></td></tr>`);
+  const watRows = waters().map(w => `<tr><td><span class="color-swatch" style="background:${waterColor(w.id)}"></span></td><td>${w.name}</td><td>${w.type}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editWater(${jsId(w.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteWater(${jsId(w.id)})">LÃ¶schen</button></div></td></tr>`);
   document.getElementById("watersTable").innerHTML = adminTable(["Farbe","Name","Typ","Aktion"], watRows);
-  const fishRows = fishTypes().map(f => `<tr><td><span class="color-swatch" style="background:${fishColor(f.id)}"></span></td><td>${f.name}</td><td>${categoryLabel(f.category)}</td><td>${f.min ? f.min + " cm" : "offen"}</td><td>${f.closed_from && f.closed_to ? formatDayMonth(f.closed_from) + " bis " + formatDayMonth(f.closed_to) : "–"}</td><td>${[f.max_per_day ? "Tag " + f.max_per_day : "", f.max_per_week ? "Woche " + f.max_per_week : "", f.max_per_month ? "Monat " + f.max_per_month : "", f.max_per_year ? "Jahr " + f.max_per_year : ""].filter(Boolean).join(" / ") || "–"}</td><td>${f.take_allowed === false ? "Nein" : "Ja"}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editFish(${jsId(f.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteFish(${jsId(f.id)})">Löschen</button></div></td></tr>`);
-  document.getElementById("fishTable").innerHTML = adminTable(["Farbe","Name","Kategorie","Mindestmaß","Schonzeit","Limits","Entnahme","Aktion"], fishRows);
+  const fishRows = fishTypes().map(f => `<tr><td><span class="color-swatch" style="background:${fishColor(f.id)}"></span></td><td>${f.name}</td><td>${categoryLabel(f.category)}</td><td>${f.min ? f.min + " cm" : "offen"}</td><td>${f.closed_from && f.closed_to ? formatDayMonth(f.closed_from) + " bis " + formatDayMonth(f.closed_to) : "â€“"}</td><td>${[f.max_per_day ? "Tag " + f.max_per_day : "", f.max_per_week ? "Woche " + f.max_per_week : "", f.max_per_month ? "Monat " + f.max_per_month : "", f.max_per_year ? "Jahr " + f.max_per_year : ""].filter(Boolean).join(" / ") || "â€“"}</td><td>${f.take_allowed === false ? "Nein" : "Ja"}</td><td><div class="actions"><button class="btn-light btn-small" onclick="editFish(${jsId(f.id)})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteFish(${jsId(f.id)})">LÃ¶schen</button></div></td></tr>`);
+  document.getElementById("fishTable").innerHTML = adminTable(["Farbe","Name","Kategorie","MindestmaÃŸ","Schonzeit","Limits","Entnahme","Aktion"], fishRows);
   renderStockMovements();
 }
 
@@ -2482,7 +2486,7 @@ async function saveMember(){
       notice("adminNotice","ok","Mitglied wurde bearbeitet.");
     } else {
       list.push(row);
-      notice("adminNotice","ok","Mitglied wurde hinzugefügt. Hinweis: Für den Login muss in Supabase zusätzlich ein Auth Benutzer angelegt und mit auth_user_id verknüpft werden.");
+      notice("adminNotice","ok","Mitglied wurde hinzugefÃ¼gt. Hinweis: FÃ¼r den Login muss in Supabase zusÃ¤tzlich ein Auth Benutzer angelegt und mit auth_user_id verknÃ¼pft werden.");
     }
     saveMembers(list);
     cancelMemberEdit(false);
@@ -2507,18 +2511,18 @@ function cancelMemberEdit(clear=true){
   document.getElementById("memberName").value = "";
   document.getElementById("memberRole").value = "mitglied";
   document.getElementById("memberStatus").value = "aktiv";
-  document.getElementById("memberFormTitle").textContent = "Mitglied hinzufügen";
+  document.getElementById("memberFormTitle").textContent = "Mitglied hinzufÃ¼gen";
   if(clear) clearNotice("adminNotice");
 }
 async function deleteMember(id){
-  if(catches().some(c => sameId(c.memberId, id))){ notice("adminNotice","warn","Dieses Mitglied ist bereits mit Fängen verknüpft und kann nicht gelöscht werden."); return; }
-  if(!confirm("Mitglied wirklich löschen?")) return;
+  if(catches().some(c => sameId(c.memberId, id))){ notice("adminNotice","warn","Dieses Mitglied ist bereits mit FÃ¤ngen verknÃ¼pft und kann nicht gelÃ¶scht werden."); return; }
+  if(!confirm("Mitglied wirklich lÃ¶schen?")) return;
   try{
     await deleteSimpleRow("members", id);
     saveMembers(members().filter(m => !sameId(m.id, id)));
-    notice("adminNotice","ok","Mitglied wurde gelöscht.");
+    notice("adminNotice","ok","Mitglied wurde gelÃ¶scht.");
     renderAll();
-  }catch(err){ notice("adminNotice","error","Mitglied konnte nicht gelöscht werden: " + err.message); }
+  }catch(err){ notice("adminNotice","error","Mitglied konnte nicht gelÃ¶scht werden: " + err.message); }
 }
 
 
@@ -2527,16 +2531,16 @@ async function saveWater(){
   const name = document.getElementById("waterName").value.trim();
   const type = document.getElementById("waterType").value;
   const color = document.getElementById("waterColor").value;
-  if(!name){ notice("adminNotice","error","Bitte einen Gewässernamen eintragen."); return; }
+  if(!name){ notice("adminNotice","error","Bitte einen GewÃ¤ssernamen eintragen."); return; }
   try{
     const row = await saveSimpleRow("waters", {name,type,color}, id);
     let list = waters();
-    if(id){ list = list.map(w => sameId(w.id, id) ? row : w); notice("adminNotice","ok","Gewässer wurde bearbeitet."); }
-    else { list.push(row); notice("adminNotice","ok","Gewässer wurde hinzugefügt."); }
+    if(id){ list = list.map(w => sameId(w.id, id) ? row : w); notice("adminNotice","ok","GewÃ¤sser wurde bearbeitet."); }
+    else { list.push(row); notice("adminNotice","ok","GewÃ¤sser wurde hinzugefÃ¼gt."); }
     saveWaters(list);
     cancelWaterEdit(false);
     renderAll();
-  }catch(err){ notice("adminNotice","error","Gewässer konnte nicht gespeichert werden: " + err.message); }
+  }catch(err){ notice("adminNotice","error","GewÃ¤sser konnte nicht gespeichert werden: " + err.message); }
 }
 
 function editWater(id){
@@ -2545,25 +2549,25 @@ function editWater(id){
   document.getElementById("waterName").value = w.name;
   document.getElementById("waterType").value = w.type;
   document.getElementById("waterColor").value = waterColor(w.id);
-  document.getElementById("waterFormTitle").textContent = "Gewässer bearbeiten";
+  document.getElementById("waterFormTitle").textContent = "GewÃ¤sser bearbeiten";
 }
 function cancelWaterEdit(clear=true){
   document.getElementById("waterEditId").value = "";
   document.getElementById("waterName").value = "";
   document.getElementById("waterType").value = "Teich";
   document.getElementById("waterColor").value = "#8fcfbd";
-  document.getElementById("waterFormTitle").textContent = "Gewässer hinzufügen";
+  document.getElementById("waterFormTitle").textContent = "GewÃ¤sser hinzufÃ¼gen";
   if(clear) clearNotice("adminNotice");
 }
 async function deleteWater(id){
-  if(catches().some(c => sameId(c.waterId, id))){ notice("adminNotice","warn","Dieses Gewässer ist bereits mit Fängen verknüpft und kann nicht gelöscht werden."); return; }
-  if(!confirm("Gewässer wirklich löschen?")) return;
+  if(catches().some(c => sameId(c.waterId, id))){ notice("adminNotice","warn","Dieses GewÃ¤sser ist bereits mit FÃ¤ngen verknÃ¼pft und kann nicht gelÃ¶scht werden."); return; }
+  if(!confirm("GewÃ¤sser wirklich lÃ¶schen?")) return;
   try{
     await deleteSimpleRow("waters", id);
     saveWaters(waters().filter(w => !sameId(w.id, id)));
-    notice("adminNotice","ok","Gewässer wurde gelöscht.");
+    notice("adminNotice","ok","GewÃ¤sser wurde gelÃ¶scht.");
     renderAll();
-  }catch(err){ notice("adminNotice","error","Gewässer konnte nicht gelöscht werden: " + err.message); }
+  }catch(err){ notice("adminNotice","error","GewÃ¤sser konnte nicht gelÃ¶scht werden: " + err.message); }
 }
 
 
@@ -2601,8 +2605,8 @@ async function saveFish(){
       take_allowed:takeAllowed
     }, id));
     let list = ensureState().fish;
-    if(id){ list = list.map(f => sameId(f.id, id) ? row : f); notice("adminNotice","ok",`Fischart „${name}“ wurde bearbeitet.`); }
-    else { list.push(row); notice("adminNotice","ok",`Fischart „${name}“ wurde hinzugefügt.`); }
+    if(id){ list = list.map(f => sameId(f.id, id) ? row : f); notice("adminNotice","ok",`Fischart â€ž${name}â€œ wurde bearbeitet.`); }
+    else { list.push(row); notice("adminNotice","ok",`Fischart â€ž${name}â€œ wurde hinzugefÃ¼gt.`); }
     saveFishTypes(list);
     cancelFishEdit(false);
     renderAll();
@@ -2638,22 +2642,22 @@ function cancelFishEdit(clear=true){
   document.getElementById("fishMaxYear").value = "";
   document.getElementById("fishTakeAllowed").value = "true";
   document.getElementById("fishColor").value = "#8fcfbd";
-  document.getElementById("fishFormTitle").textContent = "Fischart hinzufügen";
+  document.getElementById("fishFormTitle").textContent = "Fischart hinzufÃ¼gen";
   if(clear) clearNotice("adminNotice");
 }
 
 async function deleteFish(id){
   if(catches().some(c => sameId(c.fishId, id))){
-    notice("adminNotice","warn","Diese Fischart ist bereits mit Fängen verknüpft und kann nicht gelöscht werden.");
+    notice("adminNotice","warn","Diese Fischart ist bereits mit FÃ¤ngen verknÃ¼pft und kann nicht gelÃ¶scht werden.");
     return;
   }
-  if(!confirm("Fischart wirklich löschen?")) return;
+  if(!confirm("Fischart wirklich lÃ¶schen?")) return;
   try{
     await deleteSimpleRow("fish_types", id);
     saveFishTypes(ensureState().fish.filter(f => !sameId(f.id, id)));
-    notice("adminNotice","ok","Fischart wurde gelöscht.");
+    notice("adminNotice","ok","Fischart wurde gelÃ¶scht.");
     renderAll();
-  }catch(err){ notice("adminNotice","error","Fischart konnte nicht gelöscht werden: " + err.message); }
+  }catch(err){ notice("adminNotice","error","Fischart konnte nicht gelÃ¶scht werden: " + err.message); }
 }
 
 async function resetLocalTestData(){
@@ -2681,7 +2685,14 @@ function renderAll(){
   renderStats();
   renderAdmin();
 }
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(err => console.warn("Service Worker konnte nicht registriert werden:", err));
+  });
+}
 init();
 </script>
 </body>
 </html>
+
